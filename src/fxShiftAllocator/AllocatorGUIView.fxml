@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import fi.jyu.mit.fxgui.ComboBoxChooser?>
+<?import fi.jyu.mit.fxgui.ListChooser?>
+<?import fi.jyu.mit.fxgui.StringGrid?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="tia" stylesheets="@style.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxShiftAllocator.AllocatorGUIController">
+   <top>
+      <VBox styleClass="tia" BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar styleClass="tiamenu">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#handleSaveMenu" text="Save" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="true" text="Edit">
+					<items>
+					<MenuItem mnemonicParsing="true" onAction="#handleCreateNewAgent" text="New agent...">
+					</MenuItem>
+					<MenuItem mnemonicParsing="true" onAction="#handleEditAgent" text="Edit agent...">
+					</MenuItem>
+					<MenuItem mnemonicParsing="true" onAction="#handleCreateNewAbsence" text="New absence...">
+					</MenuItem>
+					<MenuItem mnemonicParsing="true" onAction="#handleEditAbsence" text="Edit absence...">
+					</MenuItem>
+					<MenuItem mnemonicParsing="true" onAction="#handleCreateNewShift" text="New shift...">
+					</MenuItem>
+					<MenuItem mnemonicParsing="true" onAction="#handleEditShift" text="Edit shift...">
+					</MenuItem>
+					</items>
+					</Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#handleOpenHelp" text="Help" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <TabPane style="-fx-background-color: transparent;" styleClass="tia" stylesheets="@style.css" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab styleClass="tia" text="Workshifts">
+                     <content>
+                        <BorderPane styleClass="tia">
+                           <left>
+                              <BorderPane styleClass="tia" BorderPane.alignment="CENTER">
+                                 <top>
+                                    <Label text="Calendar" BorderPane.alignment="CENTER" />
+                                 </top>
+                                 <BorderPane.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </BorderPane.margin>
+                                 <bottom>
+                                    <HBox styleClass="tia" BorderPane.alignment="CENTER" />
+                                 </bottom>
+                                 <center>
+                                    <VBox styleClass="tia" BorderPane.alignment="CENTER">
+                                       <children>
+                                          <Label text="Inspect date:" />
+                                          <DatePicker fx:id="showViewDate" editable="false" styleClass="tiabutton" />
+                                          <Label text="Starting date:" />
+                                          <DatePicker fx:id="showStartDate" editable="false" styleClass="tiabutton" />
+                                          <Label text="End date:" />
+                                          <DatePicker fx:id="showEndDate" editable="false" styleClass="tiabutton" />
+                                       </children>
+                                    </VBox>
+                                 </center>
+                              </BorderPane>
+                           </left>
+                           <center>
+                              <BorderPane styleClass="tia" BorderPane.alignment="CENTER">
+                                 <top>
+                                    <Label text="Shifts for inspected date" BorderPane.alignment="CENTER" />
+                                 </top>
+                                 <BorderPane.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </BorderPane.margin>
+                                 <center>
+                                    <ScrollPane fitToWidth="true" styleClass="tia" BorderPane.alignment="CENTER">
+                                       <content>
+                                          <ListChooser fx:id="chooserWorkshifts" rivit="" />
+                                       </content>
+                                    </ScrollPane>
+                                 </center>
+                              </BorderPane>
+                           </center>
+                           <right>
+                              <BorderPane styleClass="tia" BorderPane.alignment="CENTER">
+                                 <top>
+                                    <Label text="Workshift" BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets />
+                                       </BorderPane.margin>
+                                    </Label>
+                                 </top>
+                                 <center>
+                                    <ScrollPane fx:id="panelWorkshift" styleClass="tia" BorderPane.alignment="CENTER">
+                                       <content>
+                                          <GridPane hgap="10.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
+                                              <ColumnConstraints hgrow="ALWAYS" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <Label text="Name:" />
+                                                <Label text="Start time:" GridPane.rowIndex="1" />
+                                                <Label text="End time:" GridPane.rowIndex="2" />
+                                                <Label text="Responsibility:" GridPane.rowIndex="4" />
+                                                <Label text="Agent:" GridPane.rowIndex="5" />
+                                                <TextField fx:id="showShiftName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                                                <TextField fx:id="showShiftStart" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                                                <TextField fx:id="showShiftEnd" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                                                <TextField fx:id="showShiftAgent" editable="false" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" />
+                                                <Label text="Whole day:" GridPane.rowIndex="3" />
+                                                <TextField fx:id="showShiftResponsibility" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <TextField fx:id="showShiftWholeDay" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                             </children>
+                                             <padding>
+                                                <Insets left="10.0" right="10.0" top="10.0" />
+                                             </padding>
+                                          </GridPane>
+                                       </content>
+                                       <BorderPane.margin>
+                                          <Insets />
+                                       </BorderPane.margin>
+                                    </ScrollPane>
+                                 </center>
+                                 <bottom>
+                                    <HBox styleClass="tia" BorderPane.alignment="CENTER">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#handleCreateNewShift" styleClass="tiabutton" text="Create new...">
+                                             <HBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </HBox.margin>
+                                             <tooltip>
+                                                <Tooltip text="Create a new workshift for chosen date" />
+                                             </tooltip>
+                                          </Button>
+                                          <Button mnemonicParsing="false" onAction="#handleRemoveShift" styleClass="tiabutton" text="Remove">
+                                             <HBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </HBox.margin>
+                                             <tooltip>
+                                                <Tooltip text="Remove chosen workshift from the register" />
+                                             </tooltip>
+                                          </Button>
+                                       </children>
+                                       <BorderPane.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </BorderPane.margin>
+                                    </HBox>
+                                 </bottom>
+                                 <BorderPane.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </BorderPane.margin>
+                              </BorderPane>
+                           </right>
+                           <bottom>
+                              <HBox spacing="10.0" styleClass="tia" BorderPane.alignment="CENTER">
+                                 <BorderPane.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </BorderPane.margin>
+                                 <children>
+                                    <HBox styleClass="tia">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#handleDistributeShifts" styleClass="tiabutton" text="Distribute shifts">
+                                             <tooltip>
+                                                <Tooltip text="Distribute vacant shifts to agents" />
+                                             </tooltip>
+                                             <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                          <Button mnemonicParsing="false" onAction="#handleCreateDefaultShifts" styleClass="tiabutton" text="Create default shifts">
+                                             <tooltip>
+                                                <Tooltip text="Create default shifts for each day within daterange" />
+                                             </tooltip>
+                                             <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                    <HBox styleClass="tia">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#handleCreateDistributedShiftsExcel" styleClass="tiabutton" text="Create shift excel">
+                                             <tooltip>
+                                                <Tooltip text="Create excel-file for distributed shifts" />
+                                             </tooltip>
+                                             <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                          <Button mnemonicParsing="false" onAction="#handleCreateAbsenceExcel" styleClass="tiabutton" text="Create absence excel">
+                                             <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                          <Button mnemonicParsing="false" onAction="#handleDownloadAbsenceExcel" styleClass="tiabutton" text="Download absence excel">
+                                             <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets left="50.0" />
+                                       </HBox.margin>
+                                    </HBox>
+                                 </children>
+                              </HBox>
+                           </bottom>
+                        </BorderPane>
+                     </content>
+                </Tab>
+                <Tab styleClass="tia" text="Agents">
+                     <content>
+                        <BorderPane styleClass="tia">
+                           <left>
+                              <BorderPane BorderPane.alignment="CENTER">
+                                 <center>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" styleClass="tia" BorderPane.alignment="CENTER">
+                                       <children>
+                                          <ComboBoxChooser fx:id="cbFields" prefWidth="200.0">
+                                             <VBox.margin>
+                                                <Insets bottom="2.0" left="5.0" right="5.0" top="5.0" />
+                                             </VBox.margin>
+                                          </ComboBoxChooser>
+                                          <TextField fx:id="searchCriteria" onKeyReleased="#handleSearchCriteria" prefWidth="200.0">
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="2.0" />
+                                             </VBox.margin></TextField>
+                                          <ListChooser fx:id="chooserAgents" rivit="">
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </VBox.margin>
+                                          </ListChooser>
+                                       </children>
+                                       <BorderPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </BorderPane.margin>
+                                    </VBox>
+                                 </center>
+                                 <bottom>
+                                    <HBox styleClass="tia" BorderPane.alignment="CENTER">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#handleCreateNewAgent" styleClass="tiabutton" text="Create new agent...">
+                                             <HBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </HBox.margin>
+                                             <tooltip>
+                                                <Tooltip text="Create new agent to the register" />
+                                             </tooltip>
+                                          </Button>
+                                          <Button mnemonicParsing="false" onAction="#handleRemoveAgent" styleClass="tiabutton" text="Remove agent">
+                                             <HBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </HBox.margin>
+                                             <tooltip>
+                                                <Tooltip text="Remove chosen agent from the register" />
+                                             </tooltip>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                 </bottom>
+                                 <BorderPane.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </BorderPane.margin>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                                 <top>
+                                    <Label text="Agents" BorderPane.alignment="CENTER" />
+                                 </top>
+                              </BorderPane>
+                           </left>
+                           <center>
+                              <BorderPane styleClass="tia" BorderPane.alignment="CENTER">
+                                 <BorderPane.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </BorderPane.margin>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                                 <top>
+                                    <Label text="Agent" BorderPane.alignment="CENTER" />
+                                 </top>
+                                 <center>
+                                    <ScrollPane fx:id="panelAgent" styleClass="tia" BorderPane.alignment="CENTER">
+                                       <content>
+                                          <GridPane prefHeight="357.0" prefWidth="242.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="127.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="130.0" minWidth="10.0" prefWidth="115.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="29.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="46.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="37.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <Label text="First name:">
+                                                   <GridPane.margin>
+                                                      <Insets />
+                                                   </GridPane.margin>
+                                                </Label>
+                                                <Label text="Last name:" GridPane.rowIndex="1">
+                                                   <GridPane.margin>
+                                                      <Insets />
+                                                   </GridPane.margin>
+                                                </Label>
+                                                <Label text="Team number:" GridPane.rowIndex="2" />
+                                                <Label text="Default state:" GridPane.rowIndex="3" />
+                                                <Label text="Shift modifier:" GridPane.rowIndex="4" />
+                                                <TextField fx:id="showFirstname" GridPane.columnIndex="1">
+                                                   <GridPane.margin>
+                                                      <Insets />
+                                                   </GridPane.margin>
+                                                </TextField>
+                                                <TextField fx:id="showLastname" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <TextField fx:id="showTeamNumber" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <TextField fx:id="showDefaultState" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <TextField fx:id="showModifier" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </padding>
+                                          </GridPane>
+                                       </content>
+                                       <BorderPane.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </BorderPane.margin>
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                    </ScrollPane>
+                                 </center>
+                                 <bottom>
+                                    <HBox styleClass="tia" BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets />
+                                       </BorderPane.margin>
+                                    </HBox>
+                                 </bottom>
+                              </BorderPane>
+                           </center>
+                           <right>
+                              <BorderPane styleClass="tia" BorderPane.alignment="CENTER">
+                                 <top>
+                                    <Label text="Absences" BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets />
+                                       </BorderPane.margin>
+                                    </Label>
+                                 </top>
+                                 <bottom>
+                                    <HBox styleClass="tia" BorderPane.alignment="CENTER">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#handleCreateNewAbsence" styleClass="tiabutton" text="Create absence...">
+                                             <HBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </HBox.margin>
+                                             <tooltip>
+                                                <Tooltip text="Create new absence for selected agent" />
+                                             </tooltip>
+                                          </Button>
+                                          <Button mnemonicParsing="false" onAction="#handleRemoveAbsence" styleClass="tiabutton" text="Remove absence">
+                                             <HBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </HBox.margin>
+                                             <tooltip>
+                                                <Tooltip text="Remove chosen absence from chosen agent" />
+                                             </tooltip>
+                                          </Button>
+                                       </children>
+                                       <BorderPane.margin>
+                                          <Insets />
+                                       </BorderPane.margin>
+                                    </HBox>
+                                 </bottom>
+                                 <BorderPane.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </BorderPane.margin>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                                 <center>
+                                    <StringGrid fx:id="tableAbsences" rivit="Date|Start time|End time|Whole day|Explanation&#10;" BorderPane.alignment="CENTER" />
+                                 </center>
+                              </BorderPane>
+                           </right>
+                        </BorderPane>
+                     </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+         </children>
+      </VBox>
+   </top>
+</BorderPane>

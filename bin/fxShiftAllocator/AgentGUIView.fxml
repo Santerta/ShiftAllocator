@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="tia" stylesheets="@style.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxShiftAllocator.AgentGUIController">
+   <bottom>
+      <HBox styleClass="tia" BorderPane.alignment="CENTER">
+         <children>
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#handleOK" styleClass="tiabutton" text="Ok">
+               <tooltip>
+                  <Tooltip text="Create new agent to register" />
+               </tooltip>
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" styleClass="tiabutton" text="Cancel">
+               <tooltip>
+                  <Tooltip text="Cancel and return" />
+               </tooltip>
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+   </bottom>
+   <top>
+      <VBox alignment="CENTER" styleClass="tia" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" text="Agent">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin></Label>
+            <Label fx:id="labelError" alignment="CENTER" contentDisplay="CENTER" maxWidth="1000.0" />
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <GridPane prefWidth="300.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <TextField fx:id="editFirstname" GridPane.columnIndex="1" />
+            <Label text="Last name:" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </GridPane.margin>
+            </Label>
+            <TextField fx:id="editLastname" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Team number:" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </GridPane.margin>
+            </Label>
+            <ChoiceBox fx:id="editTeamNumber" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Default state:" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </GridPane.margin>
+            </Label>
+            <Label text="Modifier:" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </GridPane.margin>
+            </Label>
+            <TextField fx:id="editDefaultState" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="editModifier" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="First name:" GridPane.halignment="RIGHT">
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </GridPane.margin>
+            </Label>
+            <CheckBox fx:id="editR1" mnemonicParsing="false" text="R1" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin></CheckBox>
+            <CheckBox fx:id="editR2" mnemonicParsing="false" text="R2" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <CheckBox fx:id="editR3" mnemonicParsing="false" text="R3" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <CheckBox fx:id="editR4" mnemonicParsing="false" text="R4" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <CheckBox fx:id="editR5" mnemonicParsing="false" text="R5" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+            <CheckBox fx:id="editR6" mnemonicParsing="false" text="R6" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+            <CheckBox fx:id="editR7" mnemonicParsing="false" text="R7" GridPane.halignment="CENTER" GridPane.rowIndex="8" />
+            <CheckBox fx:id="editR8" mnemonicParsing="false" text="R8" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="8" />
+            <CheckBox fx:id="editR9" mnemonicParsing="false" text="R9" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
+            <CheckBox fx:id="editR10" mnemonicParsing="false" text="R10" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
+            <CheckBox fx:id="editR11" mnemonicParsing="false" text="R11" GridPane.halignment="CENTER" GridPane.rowIndex="10" />
+            <CheckBox fx:id="editR12" mnemonicParsing="false" text="R12" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="10" />
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="9.0" left="9.0" right="9.0" top="9.0" />
+         </BorderPane.margin>
+         <padding>
+            <Insets bottom="9.0" left="9.0" right="9.0" top="9.0" />
+         </padding>
+      </GridPane>
+   </center>
+</BorderPane>
