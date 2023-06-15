@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,9 +79,125 @@ public class Register {
     
     
     /**
-     * @return asd
-     * @throws FileNotFoundException asd
-     * @throws IOException asd
+     * 
+     */
+    public void createAllocatedShiftsExcel() {
+        //String month = startDate.getMonth().toString();
+    }
+    
+    
+    /**
+     * Downloads absence data from an Excel file and processes it to create absence records and shift reservations.
+     * TODO: Better exception and error handling
+     *
+     * @return a message indicating the result of the download process
+     */
+    public String downloadAbsenceExcel() {
+        
+        String month = this.startDate.getMonth().toString();
+        String fileName = this.directory + "/" + month + "_ABSENCES.xlsx";
+        String currentLocation = "";
+        
+        try ( FileInputStream fis = new FileInputStream(new File(fileName)) ) {
+            try (Workbook workbook = new XSSFWorkbook(fis)) {
+                Sheet sheet = workbook.getSheetAt(0);
+                
+                // Creates a list and read all the reservable shifts to it for future comparison
+                Row reservationRow = sheet.getRow(1);
+                int reservationCellIndex = 3;
+                List<String> reservableShifts = new ArrayList<>();
+                while ( reservationRow.getCell(reservationCellIndex) != null ) {
+                    Cell cell = reservationRow.getCell(reservationCellIndex);
+                    String reservableShift = cell.getStringCellValue().trim();
+                    reservableShifts.add(reservableShift);
+                    reservationCellIndex++;
+                }
+                
+                Row headerRow = sheet.getRow(2);
+                int dateCellIndex = 3;
+                int agentIDCellIndex = 1;
+                
+                while ( headerRow.getCell(dateCellIndex) != null ) {
+                    int currentRowIndex = 4; // start of the data that is to be accessed
+                    Row currentRow = sheet.getRow(currentRowIndex);
+                    
+                    while (currentRow != null) {
+                        Cell cell = currentRow.getCell(dateCellIndex);
+                        
+                        
+                        if (cell != null) {
+                            currentLocation = "Row: " + (currentRowIndex + 1) + ", Column: " + (dateCellIndex + 1);
+                            
+                            String cellValue = cell.getStringCellValue().trim();
+                            String dateString = headerRow.getCell(dateCellIndex).getStringCellValue();
+                            LocalDate date = LocalDate.parse(dateString);
+                            int agentID = (int) currentRow.getCell(agentIDCellIndex).getNumericCellValue();
+
+                            
+                            // Checks for reported partial absences during the date
+                            if (cellValue.contains(",")) {
+                                String trimmedString = cellValue.trim();
+                                String[] parts = trimmedString.split(",", 2); // Split into maximum 2 parts
+
+                                String explanation = parts[0].trim(); // Absence explanation before comma
+                                String modifiedString = parts[1].trim(); // String of absence time after comma
+
+                                StringBuilder sb = new StringBuilder(modifiedString);
+
+                                String[] timeParts = sb.toString().split("-");
+                                LocalTime startTime = LocalTime.parse(timeParts[0]);
+                                LocalTime endTime = LocalTime.parse(timeParts[1]);
+
+                                Absence absence = new Absence(date, startTime, endTime, false, explanation, agentID);
+                                absence.register();
+                                this.add(absence);
+
+                                } else if (reservableShifts.contains(cellValue)) {
+                                    // Checks for reported reservations during the date and in this cell
+                                    ReservedShift reservation = new ReservedShift(cellValue, date, agentID);
+                                    this.addShiftReservation(reservation);
+    
+                                } else {
+                                    // If absence or reservation haven't been created so far, creates an absence for the whole day
+                                    LocalTime startTime = LocalTime.parse("00:00");
+                                    LocalTime endTime = LocalTime.parse("00:00");
+    
+                                    Absence absence = new Absence(date, startTime, endTime, true, cellValue, agentID);
+                                    absence.register();
+                                    this.add(absence);
+                                }
+                            currentRowIndex++;
+                            currentRow = sheet.getRow(currentRowIndex);
+                            }
+                            currentRowIndex++;
+                            currentRow = sheet.getRow(currentRowIndex);
+                    }
+                    dateCellIndex++;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "Error at: " + currentLocation;
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+                return "Error at: " + currentLocation;
+            } catch (DateTimeParseException e) {
+                e.printStackTrace();
+                return "Error at: " + currentLocation;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Can't read file " + fileName;
+        }
+        return "Absences downloaded successfully";
+    }
+    
+    
+    /**
+     * Creates an Excel file for recording absences.
+     *
+     * @return a message indicating the success of creating the Excel file
+     * @throws FileNotFoundException if the file path is not found
+     * @throws IOException           if an I/O error occurs while creating the Excel file
      */
     public String createAbsenceExcel() throws FileNotFoundException, IOException {
         String month = this.startDate.getMonth().toString();
@@ -110,13 +227,13 @@ public class Register {
                 Cell absenceExample3 = absenceRow.createCell(5);
                 absenceExample3.setCellValue("poissa, XX:XX-XX:XX");
                 
-                Cell reservationInfo = reservationRow.createCell(2);
+                
+                int cellIndex = 2;
+                Cell reservationInfo = reservationRow.createCell(cellIndex);
                 reservationInfo.setCellValue("Varattavat vuorot: ");
                 reservationInfo.setCellStyle(boldCellStyle);
                 
                 // create and write every possible shift name to the first row from default shifts
-                int cellIndex = 3;
-                
                 try {
                     ArrayList<String> uniqueShifts = readUniqueShiftsFromFiles();
                     
@@ -173,9 +290,7 @@ public class Register {
         return "Excel created succesfully!";
     }
     
-    
-    
-    
+
     private ArrayList<String> readUniqueShiftsFromFiles() throws SailoException{
         Set<String> uniqueShiftsSet = new LinkedHashSet<>();  // Uses LinkedHashSet to preserve insertion order
         
@@ -203,10 +318,13 @@ public class Register {
     }
     
     
+    
     /**
-     * 
+     * Distributes vacant shifts to agents based on priority and reservations.
+     *
+     * @return the number of vacant shifts remaining after distribution
      */
-    public void distributeVacantShifts() {
+    public int distributeVacantShifts() {
         createPriorityQueues();
         addAgentsToPriorityQueues();
         
@@ -243,6 +361,9 @@ public class Register {
             }
         
         }
+        
+        ArrayList<Workshift> vacantShifts = this.findVacantWorkshifts();
+        return vacantShifts.size(); // vacant shifts after distributing
         
     }
     

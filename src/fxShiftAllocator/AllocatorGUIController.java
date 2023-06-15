@@ -86,13 +86,12 @@ public class AllocatorGUIController implements Initializable {
 
     
     @FXML private void handleCreateDistributedShiftsExcel() {
-        createExcel();
+        createAllocatedShiftsExcel();
     }
     
     
     @FXML private void handleCreateAbsenceExcel() throws FileNotFoundException, IOException {
-        String message = createAbsenceExcel();
-        Dialogs.showMessageDialog(message);
+        createAbsenceExcel();
     }
     
     
@@ -216,33 +215,26 @@ public class AllocatorGUIController implements Initializable {
     
     
     private void distributeVacantShifts() {
-        register.distributeVacantShifts();
+        int result = register.distributeVacantShifts();
+        Dialogs.showMessageDialog("" + result + " still vacant workshifts");
         getWorkshift(0);
     }
     
-    // TODO: excelin luominen
-    private void createExcel() {
-        // register.luoVuoroExcel();
+    
+    private void createAllocatedShiftsExcel() {
+        register.createAllocatedShiftsExcel();
     }
     
-    // TODO: poissaoloexcelin luominen
-    private String createAbsenceExcel() throws FileNotFoundException, IOException {
-        return register.createAbsenceExcel();
+
+    private void createAbsenceExcel() throws FileNotFoundException, IOException {
+        String message = register.createAbsenceExcel();
+        Dialogs.showMessageDialog(message);
     }
     
-    // TODO: poissaoloexcelin lataaminen
+    
     private void downloadAbsenceExcel() {
-        /*
-        try {
-            register.lataaPoissaoloExcel();
-        } catch ( IllegalStateException e) {
-            String virhe = e.getMessage();
-            if ( virhe != null) {
-                Dialogs.showMessageDialog("VIRHE. Korjaa ladattavan excel-tiedoston kentät");
-                Platform.exit();
-            }
-        }
-        */
+        String message = register.downloadAbsenceExcel();
+        Dialogs.showMessageDialog(message);
     }
     
     
