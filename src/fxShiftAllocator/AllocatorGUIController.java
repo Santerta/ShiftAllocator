@@ -90,8 +90,9 @@ public class AllocatorGUIController implements Initializable {
     }
     
     
-    @FXML private void handleCreateAbsenceExcel() {
-        createAbsenceExcel(); 
+    @FXML private void handleCreateAbsenceExcel() throws FileNotFoundException, IOException {
+        String message = createAbsenceExcel();
+        Dialogs.showMessageDialog(message);
     }
     
     
@@ -225,8 +226,8 @@ public class AllocatorGUIController implements Initializable {
     }
     
     // TODO: poissaoloexcelin luominen
-    private void createAbsenceExcel() {
-        // register.luoPoissaoloExcel();
+    private String createAbsenceExcel() throws FileNotFoundException, IOException {
+        return register.createAbsenceExcel();
     }
     
     // TODO: poissaoloexcelin lataaminen

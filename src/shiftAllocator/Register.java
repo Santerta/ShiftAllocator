@@ -1,9 +1,11 @@
 package shiftAllocator;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -17,17 +19,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import fi.jyu.mit.ohj2.Mjonot;
 
@@ -68,6 +73,73 @@ public class Register {
      * The amount of shifts increased to agents when they have an absence of a whole day
      */
     private double absenceWorth = 0.25;
+    
+    
+    /**
+     * @return asd
+     * @throws FileNotFoundException asd
+     * @throws IOException asd
+     */
+    public String createAbsenceExcel() throws FileNotFoundException, IOException {
+        String month = this.startDate.getMonth().toString();
+        String fileName = this.directory + "/" + month + "_ABSENCES.xlsx";
+        
+        try (OutputStream fileOut = new FileOutputStream(fileName)){
+            try (Workbook workbook = new XSSFWorkbook()) {
+                Sheet sheet = workbook.createSheet("Absences_" + month);
+                Row rowForShifts = sheet.createRow(0);
+                
+                int cellIndex = 3;
+                
+                // create and write every possible shift name to the first row from default shifts
+                try {
+                    ArrayList<String> uniqueShifts = readUniqueShiftsFromFiles();
+                    
+                    for (String uniqueShift : uniqueShifts) {
+                        Cell cell = rowForShifts.createCell(cellIndex);
+                        cell.setCellValue(uniqueShift);
+                        cellIndex++;
+                    }
+                    
+                } catch (SailoException e) {
+                    e.printStackTrace();
+                }
+                
+                workbook.write(fileOut);
+            }
+        }
+
+        return "Excel created succesfully!";
+    }
+    
+    
+    
+    
+    private ArrayList<String> readUniqueShiftsFromFiles() throws SailoException{
+        Set<String> uniqueShiftsSet = new LinkedHashSet<>();  // Uses LinkedHashSet to preserve insertion order
+        
+        String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+        
+        // Reads all the unique shifts from defaults shifts and adds them to uniqueShiftSets
+        for (String day : daysOfWeek) {
+            String fileName = this.directory + "/DefaultShifts/default" + day + ".dat";
+            try (Scanner fi = new Scanner(new FileInputStream(fileName))) {
+                while (fi.hasNext()) {
+                    String line = fi.nextLine();
+                    if (line == null || "".equals(line) || line.charAt(0) == ';') continue;
+                    
+                    String shiftName = line.split("\\|")[0];
+                    uniqueShiftsSet.add(shiftName);
+                }
+            } catch (FileNotFoundException e) {
+                throw new SailoException("Can't read file " + fileName);
+            }
+        }
+        
+        ArrayList<String> uniqueShiftsList = new ArrayList<>(uniqueShiftsSet);
+        
+        return uniqueShiftsList;
+    }
     
     
     /**
@@ -511,7 +583,7 @@ public class Register {
                 Register.responsibilities.add(s);
             }
         } catch (FileNotFoundException e) {
-            throw new SailoException("Ei saa luettua tiedostoa " + responData);
+            throw new SailoException("Can't read file " + responData);
         }
         
         this.agents.readFromFile(name);

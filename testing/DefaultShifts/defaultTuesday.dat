@@ -1,7 +1,0 @@
-Test Shift Tuesday 1|08:00|10:00|false|1
-Test Shift Tuesday 2|10:00|12:00|false|2
-Test Shift Tuesday 3|12:00|14:00|false|3
-Test Shift Tuesday 4|14:00|16:00|false|4
-Test Shift Tuesday 5|16:00|18:00|false|5
-Test Shift Tuesday 6|08:00|18:00|true|6
-Test Shift Tuesday 7|08:00|10:00|false|1
