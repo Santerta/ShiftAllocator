@@ -28,6 +28,8 @@ import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -87,22 +89,81 @@ public class Register {
         try (OutputStream fileOut = new FileOutputStream(fileName)){
             try (Workbook workbook = new XSSFWorkbook()) {
                 Sheet sheet = workbook.createSheet("Absences_" + month);
-                Row rowForShifts = sheet.createRow(0);
+                // --------------- FIRST TWO INFO ROWS -----------------------------------
+                // Create cell styles
+                CellStyle boldCellStyle = workbook.createCellStyle();
+                Font boldFont = workbook.createFont();
+                boldFont.setBold(true);
+                boldCellStyle.setFont(boldFont);
                 
-                int cellIndex = 3;
+                // Create rows for details and information about the excel and for the list of absences that can be reserved
+                Row absenceRow = sheet.createRow(0);
+                Row reservationRow = sheet.createRow(1);
+                
+                Cell absenceInfo = absenceRow.createCell(2);
+                absenceInfo.setCellValue("Poissaolojen ilmoittaminen:");
+                absenceInfo.setCellStyle(boldCellStyle);
+                Cell absenceExample1 = absenceRow.createCell(3);
+                absenceExample1.setCellValue("poissa");
+                Cell absenceExample2 = absenceRow.createCell(4);
+                absenceExample2.setCellValue("loma");
+                Cell absenceExample3 = absenceRow.createCell(5);
+                absenceExample3.setCellValue("poissa, XX:XX-XX:XX");
+                
+                Cell reservationInfo = reservationRow.createCell(2);
+                reservationInfo.setCellValue("Varattavat vuorot: ");
+                reservationInfo.setCellStyle(boldCellStyle);
                 
                 // create and write every possible shift name to the first row from default shifts
+                int cellIndex = 3;
+                
                 try {
                     ArrayList<String> uniqueShifts = readUniqueShiftsFromFiles();
                     
                     for (String uniqueShift : uniqueShifts) {
-                        Cell cell = rowForShifts.createCell(cellIndex);
+                        Cell cell = reservationRow.createCell(cellIndex+1);
                         cell.setCellValue(uniqueShift);
                         cellIndex++;
                     }
                     
                 } catch (SailoException e) {
                     e.printStackTrace();
+                }
+                
+                // ------------------- Printing agents, agent info, dates etc. ------------------------
+                
+                Row rowHead = sheet.createRow(2); // Row for header and dates
+                Row rowWeekday = sheet.createRow(3); // Row for weekdays
+                
+                rowHead.createCell(0).setCellValue("Team");
+                rowHead.createCell(1).setCellValue("ID");
+                rowHead.createCell(2).setCellValue("Name");
+                
+                this.iteratorDate = this.startDate;
+                cellIndex = 3;
+                while ( this.iteratorDate.compareTo(this.endDate) <= 0 ) {
+                    rowHead.createCell(cellIndex).setCellValue(this.iteratorDate.toString());
+                    rowWeekday.createCell(cellIndex).setCellValue(this.iteratorDate.getDayOfWeek().toString());
+                    cellIndex++;
+                    this.iteratorDate = this.iteratorDate.plusDays(1);
+                } // creates cells for dates and weekdays below it
+                
+                this.iteratorDate = this.startDate; // just in case it's needed again
+                
+                int rowNumber = 4;
+                
+                // TODO: Team number is set max 10 in GUI. Create a better implementation.
+                for (int teamNumber = 1; teamNumber < 11; teamNumber++) {
+                    ArrayList<Agent> allAgentsofTeam = getAllMembersOfTeam(teamNumber);
+                    
+                    for (int i = 0; i < allAgentsofTeam.size(); i++) {
+                        Row rivi = sheet.createRow(rowNumber);
+                        Agent agent = allAgentsofTeam.get(i);
+                        rivi.createCell(0).setCellValue(agent.getTeamNumber());
+                        rivi.createCell(1).setCellValue(agent.getIDNumber());
+                        rivi.createCell(2).setCellValue(agent.getFullName());
+                        rowNumber++;
+                    }
                 }
                 
                 workbook.write(fileOut);
@@ -518,7 +579,10 @@ public class Register {
     
     
     
-
+    /**
+     * @param teamNumber of the team
+     * @return ArrayList with all the agents in the team in alphabetical order
+     */
     private ArrayList<Agent> getAllMembersOfTeam(int teamNumber){
         return this.agents.getAllMembersOfTeam(teamNumber);
     }
