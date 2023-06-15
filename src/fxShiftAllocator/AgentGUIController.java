@@ -228,10 +228,12 @@ public class AgentGUIController implements ModalControllerInterface<Agent>,Initi
     private void showAgent(Agent agent) {
         if(agent == null) return;
         
-        // basic info
+        // Basic info
         editFirstname.setText(agent.get(1));
         editLastname.setText(agent.get(2));
         
+        
+        // TODO: Get the amount of teams from the register
         ObservableList<Integer> options = FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         editTeamNumber.setItems(options);
         editTeamNumber.setValue(options.get(agent.getTeamNumber()-1));
@@ -239,7 +241,7 @@ public class AgentGUIController implements ModalControllerInterface<Agent>,Initi
         editDefaultState.setText(agent.get(4));
         editModifier.setText(agent.get(5).toString());
         
-        // responsibilities
+        // Responsibilities
         editR1.setSelected(agent.getResponsibilityByIndex(0));
         editR2.setSelected(agent.getResponsibilityByIndex(1));
         editR3.setSelected(agent.getResponsibilityByIndex(2));

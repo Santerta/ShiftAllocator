@@ -1,26 +1,19 @@
 package shiftAllocator;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -32,12 +25,9 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import fi.jyu.mit.ohj2.Mjonot;
 
 /**
  * @author Santeri Tammisto
@@ -61,8 +51,8 @@ public class Register {
     private List<PriorityQueue<Agent>> priorityQueues;
     private Random random;
     
-    private static final DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd.MM.uuuu");
-    
+    // private static final DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd.MM.uuuu");
+    private int amountOfTeams = 10;
     
     /**
      * TODO: Create a non-static implementation
@@ -82,7 +72,158 @@ public class Register {
      * 
      */
     public void createAllocatedShiftsExcel() {
-        //String month = startDate.getMonth().toString();
+        String month = this.startDate.getMonth().toString();
+        String fileName = this.directory + "/" + month + "_SHIFTS.xlsx";
+        
+        try ( OutputStream fileOut = new FileOutputStream(fileName) ) {
+            try (Workbook workbook = new XSSFWorkbook()) {
+                Sheet sheet = workbook.createSheet(month + "_SHIFTS");
+                
+                
+                // Creates the fist two rows containing agent info headers, dates and weekdays
+                Row rowHead = sheet.createRow(0);
+                rowHead.createCell(0).setCellValue("Team");
+                rowHead.createCell(1).setCellValue("ID");
+                rowHead.createCell(2).setCellValue("Name");
+                
+                Row weekOfDayRow = sheet.createRow(1);
+                this.iteratorDate = this.startDate;
+                int dateCellIndex = 3;
+                
+                while ( this.iteratorDate.compareTo(this.endDate) <= 0 ) {
+                    rowHead.createCell(dateCellIndex).setCellValue(this.iteratorDate.toString());
+                    weekOfDayRow.createCell(dateCellIndex).setCellValue(this.iteratorDate.getDayOfWeek().toString());
+                    dateCellIndex++;
+                    this.iteratorDate = this.iteratorDate.plusDays(1);
+                }
+                
+                this.iteratorDate = this.startDate; // Just in case
+                
+                int rowNumber = 2;
+                for ( int teamNumber = 1 ; teamNumber <= this.amountOfTeams ; teamNumber++ ) {
+                    ArrayList<Agent> membersOfTeam = getAllMembersOfTeam(teamNumber);
+                    
+                    for (int i = 0; i < membersOfTeam.size(); i++) {
+                        Row currentRow = sheet.createRow(rowNumber);
+                        Agent agent = membersOfTeam.get(i);
+                        currentRow.createCell(0).setCellValue(agent.getTeamNumber());
+                        currentRow.createCell(1).setCellValue(agent.getIDNumber());
+                        currentRow.createCell(2).setCellValue(agent.getFullName());
+                        rowNumber++;
+                    }
+                }
+                
+                dateCellIndex = 3;
+                int agentIDCell = 1;
+                
+                while (rowHead.getCell(dateCellIndex) != null) {
+                    int currentRowIndex = 2;
+                    Row currentRow = sheet.getRow(currentRowIndex);
+                    
+                    while ( currentRow != null ) {
+                        int agentID = (int) currentRow.getCell(agentIDCell).getNumericCellValue();
+                        Agent agent = this.agents.findAgent(agentID);
+                        String dateString = rowHead.getCell(dateCellIndex).getStringCellValue();
+                        
+                        // Checks if an agent has a default text and adds it to the cell
+                        if ( !agent.get(4).equals("") ) {
+                            currentRow.createCell(dateCellIndex).setCellValue(agent.get(4));
+                        }
+                        
+                        // Checks if agent has any absences and adds them to the cell if he does
+                        List<Absence> agentsAbsences = new ArrayList<Absence>();
+                        agentsAbsences = this.getAbsences(agent);
+                        
+                        for (Absence absent : agentsAbsences) {
+                            if (absent.getDate().isEqual(LocalDate.parse(dateString))) {
+                                String text;
+                                if (!absent.getWholeDayFlag()) {
+                                    StringBuilder sb = new StringBuilder();
+                                    sb.append(absent.getExplanation())
+                                      .append(" ")
+                                      .append(absent.getStartTime())
+                                      .append("-")
+                                      .append(absent.getStopTime());
+                                    text = sb.toString();
+                                } else {
+                                    text = absent.getExplanation();
+                                }
+                                currentRow.createCell(dateCellIndex).setCellValue(text);
+                            }
+                        }
+                        
+                        // Checks for actual shifts and adds them to the excel if the agent has any
+                        ArrayList<Workshift> daysShifts = (ArrayList<Workshift>) this.workshifts.find(LocalDate.parse(dateString));
+                        
+                        for ( Workshift shift: daysShifts ) {
+                            if ( shift.getAgentsID() == agentID ) {
+                                currentRow.createCell(dateCellIndex).setCellValue(shift.getName());
+                            }
+                        }
+                        
+                        currentRowIndex++;
+                        currentRow = sheet.getRow(currentRowIndex);
+                    }
+                    
+                    // Creates and shows still vacant workshifts at the end of the excel-file
+                    /*
+                    String currentDateString = rowHead.getCell(dateCellIndex).toString();
+                    LocalDate currentDate = LocalDate.parse(currentDateString);
+                    ArrayList<Workshift> shiftsToday = (ArrayList<Workshift>) workshifts.find(currentDate);
+                    ArrayList<Workshift> vacantShifts = new ArrayList<Workshift>();
+                    
+                    for (Workshift shift: shiftsToday) {
+                        if ( shift.getAgentsID() == 0) {
+                            vacantShifts.add(shift);
+                        } 
+                    }
+                    
+                    currentRow = sheet.getRow(currentRowIndex+10);
+                    for (Workshift shift : vacantShifts) {
+                        currentRow = sheet.getRow(currentRowIndex);
+                        if ( currentRow == null ) {
+                            currentRow = sheet.createRow(currentRowIndex);
+                        }
+                        currentRow.createCell(dateCellIndex).setCellValue(shift.getName());
+                        currentRowIndex++;
+                    }
+                    */
+                    String date = rowHead.getCell(dateCellIndex).toString();
+                    LocalDate day = LocalDate.parse(date);
+                    ArrayList<Workshift> shiftsOfToday = (ArrayList<Workshift>) workshifts.find(day);
+                    ArrayList<Workshift> vacantShifts = new ArrayList<Workshift>();
+                    for (Workshift shift: shiftsOfToday) {
+                        if ( shift.getAgentsID() == 0) {
+                            vacantShifts.add(shift);
+                        } 
+                    }
+                    int vacantCellIndex = currentRowIndex+10;
+                    for ( Workshift shift: vacantShifts ) {
+                        currentRow = sheet.getRow(vacantCellIndex);
+                        if ( currentRow == null ) {
+                            currentRow = sheet.createRow(vacantCellIndex);
+                        }
+                        currentRow.createCell(dateCellIndex).setCellValue(shift.getName());
+                        vacantCellIndex++;
+                    }
+                    
+                    
+                    dateCellIndex++;
+                    
+                }
+                
+                workbook.write(fileOut);
+                
+            } catch (FileNotFoundException e) {
+                throw e;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        
     }
     
     
@@ -101,7 +242,6 @@ public class Register {
         try ( FileInputStream fis = new FileInputStream(new File(fileName)) ) {
             try (Workbook workbook = new XSSFWorkbook(fis)) {
                 Sheet sheet = workbook.getSheetAt(0);
-                
                 // Creates a list and read all the reservable shifts to it for future comparison
                 Row reservationRow = sheet.getRow(1);
                 int reservationCellIndex = 3;
@@ -174,6 +314,7 @@ public class Register {
                     }
                     dateCellIndex++;
                 }
+                
             } catch (IOException e) {
                 e.printStackTrace();
                 return "Error at: " + currentLocation;
@@ -269,8 +410,7 @@ public class Register {
                 
                 int rowNumber = 4;
                 
-                // TODO: Team number is set max 10 in GUI. Create a better implementation.
-                for (int teamNumber = 1; teamNumber < 11; teamNumber++) {
+                for (int teamNumber = 1; teamNumber <= this.amountOfTeams; teamNumber++) {
                     ArrayList<Agent> allAgentsofTeam = getAllMembersOfTeam(teamNumber);
                     
                     for (int i = 0; i < allAgentsofTeam.size(); i++) {
