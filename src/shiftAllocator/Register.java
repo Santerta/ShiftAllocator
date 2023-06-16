@@ -844,6 +844,10 @@ public class Register {
                     if (shiftStart.isBefore(absenceEnd) && shiftEnd.isBefore(absenceStart)) {
                         return true; // Overlapping absence and shift
                     }
+                    // Check for equal times
+                    if (shiftStart.equals(absenceEnd) || shiftEnd.equals(absenceStart)) {
+                        return false; // Times are equal, worker is not absent
+                    }
                 }
             }
         }
