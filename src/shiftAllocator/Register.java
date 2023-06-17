@@ -878,6 +878,7 @@ public class Register {
         Path dataDirectoryPath = directoryPath.resolve("data");
         Path defaultShiftsDirectoryPath = dataDirectoryPath.resolve("DefaultShifts");
         Path responsibilitiesFilePath = dataDirectoryPath.resolve("responsibilities.dat");
+        Path settingsFilePath = dataDirectoryPath.resolve("settings.dat");
 
         createDirectory(dataDirectoryPath);
         
@@ -885,6 +886,9 @@ public class Register {
             createDirectory(defaultShiftsDirectoryPath);
             createDefaultShiftFiles(defaultShiftsDirectoryPath);
         }
+        
+        createSettingsFile(settingsFilePath);
+        getAbsenceWorthFromFile(settingsFilePath);
         
         createResponsibilitiesFile(responsibilitiesFilePath, amountOfResponsibilities);
 
@@ -900,6 +904,37 @@ public class Register {
         this.workshifts = new Workshifts();
 
         this.agents.readFromFile(name);
+    }
+    
+    private void createSettingsFile(Path settingsFilePath) throws SailoException {
+        if (Files.exists(settingsFilePath)) {
+            return; // File already exists
+        }
+        
+        try (PrintStream fileOutput = new PrintStream(new FileOutputStream(settingsFilePath.toFile()))) {
+            fileOutput.println("; Absence modifier");
+            fileOutput.println(this.absenceWorth);
+        } catch (IOException e) {
+            throw new SailoException("Failed to create responsibilities file: " + settingsFilePath);
+        }
+    }
+    
+    
+    private void getAbsenceWorthFromFile(Path settingsFilePath) throws IOException {
+        
+        try (Scanner fileInput = new Scanner(settingsFilePath)) {
+            while (fileInput.hasNextLine()) {
+                String line = fileInput.nextLine();
+                if (line == null || line.isEmpty() || line.charAt(0) == ';') continue;
+
+                try {
+                    double newAbsenceWorth = Double.parseDouble(line);
+                    this.absenceWorth = newAbsenceWorth;
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     
