@@ -151,25 +151,25 @@ public class Workshifts {
         
         switch ( weekDay ) {
         case "MONDAY":
-            createDefaultWorkshiftsFromFile(directory + "/DefaultShifts/defaultMonday.dat", givenDate);
+            createDefaultWorkshiftsFromFile(directory + "/data/DefaultShifts/1_monday.dat", givenDate);
             break;
         case "TUESDAY":
-            createDefaultWorkshiftsFromFile(directory + "/DefaultShifts/defaultTuesday.dat", givenDate);
+            createDefaultWorkshiftsFromFile(directory + "/data/DefaultShifts/2_tuesday.dat", givenDate);
             break;
         case "WEDNESDAY":
-            createDefaultWorkshiftsFromFile(directory + "/DefaultShifts/defaultWednesday.dat", givenDate);
+            createDefaultWorkshiftsFromFile(directory + "/data/DefaultShifts/3_wednesday.dat", givenDate);
             break;
         case "THURSDAY":
-            createDefaultWorkshiftsFromFile(directory + "/DefaultShifts/defaultThursday.dat", givenDate);
+            createDefaultWorkshiftsFromFile(directory + "/data/DefaultShifts/4_thursday.dat", givenDate);
             break;
         case "FRIDAY":
-            createDefaultWorkshiftsFromFile(directory + "/DefaultShifts/defaultFriday.dat", givenDate);
+            createDefaultWorkshiftsFromFile(directory + "/data/DefaultShifts/5_friday.dat", givenDate);
             break;
         case "SATURDAY":
-            createDefaultWorkshiftsFromFile(directory + "/DefaultShifts/defaultSaturday.dat", givenDate);
+            createDefaultWorkshiftsFromFile(directory + "/data/DefaultShifts/6_saturday.dat", givenDate);
             break;
         case "SUNDAY":
-            createDefaultWorkshiftsFromFile(directory + "/DefaultShifts/defaultSunday.dat", givenDate);
+            createDefaultWorkshiftsFromFile(directory + "/data/DefaultShifts/7_sunday.dat", givenDate);
             break;
         default:
             break;

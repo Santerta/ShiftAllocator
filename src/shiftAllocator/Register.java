@@ -7,6 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -865,74 +868,93 @@ public class Register {
     }
     
     
-    
-    
     /**
-     * Reads registers information from file and/or creates files
-     * @param name that's used in reading
-     * @throws SailoException if reading fails
+     * @param name as
+     * @throws SailoException asd
+     * @throws IOException  asd
      */
-    public void readFromFile(String name) throws SailoException {
-        File dir = new File("./" + name);
-        dir.mkdirs();
+    public void readFromFile(String name) throws SailoException, IOException {
+        Path directoryPath = Paths.get(".", name);
+        Path dataDirectoryPath = directoryPath.resolve("data");
+        Path defaultShiftsDirectoryPath = dataDirectoryPath.resolve("DefaultShifts");
+        Path responsibilitiesFilePath = dataDirectoryPath.resolve("responsibilities.dat");
+
+        createDirectory(dataDirectoryPath);
         
+        if (!Files.exists(defaultShiftsDirectoryPath)) {
+            createDirectory(defaultShiftsDirectoryPath);
+            createDefaultShiftFiles(defaultShiftsDirectoryPath);
+        }
+        
+        createResponsibilitiesFile(responsibilitiesFilePath, amountOfResponsibilities);
+
+        try {
+            readResponsibilitiesFromFile(responsibilitiesFilePath);
+        } catch (IOException e) {
+            throw new SailoException("Can't read file " + responsibilitiesFilePath);
+        }
+
+        this.directory = directoryPath.toAbsolutePath().toString();
         this.agents = new Agents();
         this.absences = new Absences();
         this.workshifts = new Workshifts();
-        
-        this.directory = dir.getAbsolutePath();
-        
-        // creates the files for defaults workshifts if it doesn't exist
-        File dirDefaults = new File(dir, "DefaultShifts");
-        if (!dirDefaults.exists()) {
-            dirDefaults.mkdirs();
-            
-            String[] defaults = {"defaultMonday.dat", "defaultTuesday.dat", "defaultWednesday.dat", 
-                    "defaultThursday.dat", "defaultFriday.dat", "defaultSaturday.dat",
-                    "defaultSunday.dat"};
-            
-            for (int i = 0; i < defaults.length; i++) {
-                File newFile = new File(dirDefaults, defaults[i]);
-                try {
-                    newFile.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        
-        // creates the file for creating responsibilities if it doesn't exist
-        File responData = new File(name + "/responsibilities.dat");
-        if (!responData.exists()) {
-            try {
-                responData.createNewFile();
-                try (PrintStream fo = new PrintStream(new FileOutputStream(responData, false))) {
-                    for (int i = 0 ; i < this.amountOfResponsibilities ; i++) {
-                        fo.println("R" + (i+1));
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        
-        // reads responsibilities.dat file and adds the lines to this registers responsibilities array
-        try (Scanner fi = new Scanner(new FileInputStream(responData))) {
-            while ( fi.hasNext() ) {
-                String s = fi.nextLine();
-                if ( s == null || "".equals(s) || s.charAt(0) == ';' ) continue;
-                Register.responsibilities.add(s);
-            }
-        } catch (FileNotFoundException e) {
-            throw new SailoException("Can't read file " + responData);
-        }
-        
+
         this.agents.readFromFile(name);
-        //this.poissaolot.readFromFile(name);
-        //this.tyotehtavat.readFromFile(name);
+    }
+
+    
+    private void createDirectory(Path directoryPath) throws SailoException {
+        try {
+            Files.createDirectories(directoryPath);
+        } catch (IOException e) {
+            throw new SailoException("Failed to create directory: " + directoryPath);
+        }
     }
     
     
+    private void createDefaultShiftFiles(Path defaultShiftsDirectoryPath) throws IOException {
+        
+        Files.createDirectories(defaultShiftsDirectoryPath);
+        
+        String[] defaults = {"1_monday.dat", "2_tuesday.dat", "3_wednesday.dat", 
+                "4_thursday.dat", "5_friday.dat", "6_saturday.dat",
+                "7_sunday.dat"};
+        
+        for (String defaultFile : defaults) {
+            Path newFilePath = defaultShiftsDirectoryPath.resolve(defaultFile);
+            Files.createFile(newFilePath);
+        }
+    }
+       
+
+    
+    private void createResponsibilitiesFile(Path responsibilitiesFilePath, int responsibilitiesAmount) throws SailoException {
+        
+        if (Files.exists(responsibilitiesFilePath)) {
+            return; // File already exists
+        }
+
+        try (PrintStream fileOutput = new PrintStream(new FileOutputStream(responsibilitiesFilePath.toFile()))) {
+            for (int i = 0; i < responsibilitiesAmount; i++) {
+                fileOutput.println("R" + (i + 1));
+            }
+        } catch (IOException e) {
+            throw new SailoException("Failed to create responsibilities file: " + responsibilitiesFilePath);
+        }
+        
+    }
+
+    
+    private void readResponsibilitiesFromFile(Path responsibilitiesFilePath) throws IOException {
+        try (Scanner fileInput = new Scanner(responsibilitiesFilePath)) {
+            while (fileInput.hasNextLine()) {
+                String line = fileInput.nextLine();
+                if (line == null || line.isEmpty() || line.charAt(0) == ';')
+                    continue;
+                Register.responsibilities.add(line);
+            }
+        }
+    }
     
     
     /**

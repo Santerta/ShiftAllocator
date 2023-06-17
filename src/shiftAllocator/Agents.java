@@ -109,7 +109,7 @@ public class Agents {
      * @throws SailoException if reading fails
      */
     public void readFromFile(String directory) throws SailoException {
-        String name = directory + "/agents.dat";
+        String name = directory + "/data/agents.dat";
         File ftied = new File(name);
         
         try (Scanner fi = new Scanner(new FileInputStream(ftied))) {
@@ -132,7 +132,7 @@ public class Agents {
      * @throws SailoException if saving fails
      */
     public void save(String directory) throws SailoException {
-        File ftied = new File(directory + "/agents.dat");
+        File ftied = new File(directory + "/data/agents.dat");
         try (PrintStream fo = new PrintStream(new FileOutputStream(ftied, false))) {
             for (int i = 0; i < this.getCount(); i++) {
                 Agent agent = this.getAgent(i);

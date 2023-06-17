@@ -284,8 +284,9 @@ public class AllocatorGUIController implements Initializable {
      * Initializes register by reading it from given filename
      * @param name file from where the register information will be read
      * @return null if success, error text if not
+     * @throws IOException asd
      */
-    protected String readFile(String name) {
+    protected String readFile(String name) throws IOException {
         registername = name;
         try {
             register.readFromFile(name);
@@ -305,8 +306,9 @@ public class AllocatorGUIController implements Initializable {
     /**
      * Asks filename and reads it
      * @return true if success, false if not
+     * @throws IOException asd
      */
-    public boolean open() {
+    public boolean open() throws IOException {
         String newName = RegisterNameController.askName(null, registername);
         if ( newName == null) return false;
         readFile(newName);
