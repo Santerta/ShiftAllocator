@@ -57,7 +57,7 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <TabPane style="-fx-background-color: transparent;" styleClass="tia" stylesheets="@style.css" tabClosingPolicy="UNAVAILABLE">
+            <TabPane styleClass="tia" stylesheets="@style.css" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab styleClass="tia" text="Workshifts">
                      <content>

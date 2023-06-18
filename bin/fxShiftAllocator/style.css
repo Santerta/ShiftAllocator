@@ -1,30 +1,37 @@
-.error {
-    /* @SuppressWarning */
-    -fx-background-color: red;
-}
 .normaali {
-    /* @SuppressWarning */
-    -fx-background-color: white;
+    -fx-background-color: #008a28;
+    -fx-text-fill: white;
 }
+
 .tia {
-    /* @SuppressWarning */
-    -fx-background-color: #f5f5af;
+    -fx-background-color: #006e22;
+    -fx-text-fill: white;
 }
+
 .tiamenu {
-    /* @SuppressWarning */
     -fx-background-color: lightgrey;
+    -fx-text-fill: white;
 }
+
 .tiabutton {
-    -fx-background-color: #f5f5af;
+    -fx-background-color: #008a28;
     -fx-border-color: black;
+    -fx-text-fill: white;
 }
+
 .tiabutton:hover {
     -fx-background-color:
-            linear-gradient(from 0% 93% to 0% 100%, #f5f5af 0%, #f5f5af 100%),
-            #7a7c7d,
-            #9b9d9e,
-            radial-gradient(center 50% 50%, radius 100%, #f5f5af, #f5f5af);
+        linear-gradient(from 0% 93% to 0% 100%, #006e22 0%, #006e22 100%),
+        #7a7c7d,
+        #9b9d9e,
+        radial-gradient(center 50% 50%, radius 100%, #008a28, #008a28);
 }
+
 .tiabutton:pressed {
     -fx-background-insets: 2 0 0 0,2 0 3 0, 2 0 4 0, 2 0 5 0;
+}
+
+.error {
+    -fx-background-color: red;
+    -fx-text-fill: white;
 }
