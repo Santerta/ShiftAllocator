@@ -447,11 +447,13 @@ public class Register {
     private ArrayList<String> readUniqueShiftsFromFiles() throws SailoException{
         Set<String> uniqueShiftsSet = new LinkedHashSet<>();  // Uses LinkedHashSet to preserve insertion order
         
-        String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+        String[] daysOfWeek = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
         
         // Reads all the unique shifts from defaults shifts and adds them to uniqueShiftSets
+        int dayNumber = 1;
         for (String day : daysOfWeek) {
-            String fileName = this.directory + "/DefaultShifts/default" + day + ".dat";
+            String fileName = this.directory + "/data/DefaultShifts/" + dayNumber + "_" + day + ".dat";
+            dayNumber++;
             try (Scanner fi = new Scanner(new FileInputStream(fileName))) {
                 while (fi.hasNext()) {
                     String line = fi.nextLine();
@@ -844,7 +846,7 @@ public class Register {
                     LocalTime absenceEnd = absence.getStopTimeLT();
                     LocalTime shiftStart = shift.getStartTimeLT();
                     LocalTime shiftEnd = shift.getEndTimeLT();
-                    if (shiftStart.isBefore(absenceEnd) && shiftEnd.isBefore(absenceStart)) {
+                    if (shiftStart.isBefore(absenceEnd) && shiftEnd.isAfter(absenceStart)) {
                         return true; // Overlapping absence and shift
                     }
                     // Check for equal times

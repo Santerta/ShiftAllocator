@@ -14,7 +14,7 @@
    <center>
       <VBox alignment="CENTER" styleClass="tia" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="50.0" text="Shift Allocator">
+            <Label alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="50.0" text="Fenix">
                <font>
                   <Font name="Arial Bold" size="24.0" />
                </font>

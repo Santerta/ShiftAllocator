@@ -24,7 +24,7 @@ public class ShiftAllocatorMain extends Application {
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
             primaryStage.setScene(scene);
-            primaryStage.setTitle("Shift Allocator");
+            primaryStage.setTitle("Fenix");
             
             primaryStage.setOnCloseRequest((event) -> {
                 if ( !shiftAllocatorCtrl.canClose() ) event.consume();
