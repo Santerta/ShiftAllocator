@@ -877,12 +877,14 @@ public class Register {
     
     
     /**
-     * @param name as
+     * @param givenDirectory as
      * @throws SailoException asd
      * @throws IOException  asd
      */
-    public void readFromFile(String name) throws SailoException, IOException {
-        Path directoryPath = Paths.get(".", name);
+    public void readFromFile(String givenDirectory) throws SailoException, IOException {
+        this.directory = "./" + givenDirectory;
+        
+        Path directoryPath = Paths.get(".", givenDirectory);
         Path dataDirectoryPath = directoryPath.resolve("data");
         Path defaultShiftsDirectoryPath = dataDirectoryPath.resolve("DefaultShifts");
         Path responsibilitiesFilePath = dataDirectoryPath.resolve("responsibilities.dat");
@@ -906,12 +908,11 @@ public class Register {
             throw new SailoException("Can't read file " + responsibilitiesFilePath);
         }
 
-        this.directory = directoryPath.toAbsolutePath().toString();
-        this.agents = new Agents();
-        this.absences = new Absences();
-        this.workshifts = new Workshifts();
+        //this.agents = new Agents();
+        //this.absences = new Absences();
+        //this.workshifts = new Workshifts();
 
-        this.agents.readFromFile(name);
+        this.agents.readFromFile(givenDirectory);
     }
     
     private void createSettingsFile(Path settingsFilePath) throws SailoException {
