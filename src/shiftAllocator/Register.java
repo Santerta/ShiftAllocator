@@ -829,6 +829,8 @@ public class Register {
     
     /**
      * Checks if a worker is absent during a given workshift.
+     * TODO: Create a better solution to checking and adding absence-points to agents
+     * 
      * @param agent The agent for whom to check the absence.
      * @param shift The workshift for which to check the worker's absence.
      * @return {@code true} if the worker is absent during the workshift, {@code false} otherwise.
@@ -839,6 +841,10 @@ public class Register {
         if (!foundAbsences.isEmpty()) {
             for (Absence absence : foundAbsences) {
                 if (absence.getDate().isEqual(shift.getDate()) && absence.getWholeDayFlag()) {
+                    if (!agent.hasAllocatedDay(shift.getDate())) {
+                        agent.addAllocatedDay(shift.getDate());
+                        agent.increaseShiftsByAbsenceModifier(this.absenceWorth);
+                    }
                     return true; // Whole day absence on the same date
                 }
                 if ( absence.getDate().isEqual(shift.getDate()) ) {

@@ -1,5 +1,7 @@
 package shiftAllocator;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 import fi.jyu.mit.ohj2.Mjonot;
@@ -22,7 +24,28 @@ public class Agent implements Cloneable {
     private double[] amountOfShiftsArray = new double[Register.responsibilities.size()];
     private double shiftAmountAll = 0.0;
     
+    private ArrayList<LocalDate> allocatedDays = new ArrayList<>();
+    
     private static int  nextNumber = 1;
+    
+    
+    
+    /**
+     * Adds a date to the set of allocated days for the agent.
+     * @param date The date to be added as an allocated day.
+     */
+    public void addAllocatedDay(LocalDate date) {
+        this.allocatedDays.add(date);
+    }
+    
+    /**
+     * Checks if the agent has already been allocated points for a specific date.
+     * @param date The date to check for allocated points.
+     * @return {@code true} if the agent has already been allocated points for the date, {@code false} otherwise.
+     */
+    public boolean hasAllocatedDay(LocalDate date) {
+        return allocatedDays.contains(date);
+    }
     
     
     /**

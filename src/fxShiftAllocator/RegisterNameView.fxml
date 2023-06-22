@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="295.0" prefWidth="468.0" styleClass="tia" stylesheets="@style.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxShiftAllocator.RegisterNameController">
+<BorderPane prefHeight="295.0" prefWidth="468.0" styleClass="tia" stylesheets="@style.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="fxShiftAllocator.RegisterNameController">
    <center>
       <VBox alignment="CENTER" styleClass="tia" BorderPane.alignment="CENTER">
          <children>

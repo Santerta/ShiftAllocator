@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane styleClass="tia" stylesheets="@style.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxShiftAllocator.AbsenceGUIController">
+<BorderPane styleClass="tia" stylesheets="@style.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="fxShiftAllocator.AbsenceGUIController">
    <top>
       <Label text="Absence information" BorderPane.alignment="CENTER">
          <BorderPane.margin>

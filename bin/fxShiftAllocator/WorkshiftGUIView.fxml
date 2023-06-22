@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane prefHeight="288.0" prefWidth="356.0" styleClass="tia" stylesheets="@style.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxShiftAllocator.WorkshiftGUIController">
+<BorderPane prefHeight="288.0" prefWidth="356.0" styleClass="tia" stylesheets="@style.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="fxShiftAllocator.WorkshiftGUIController">
    <bottom>
       <HBox styleClass="tia" BorderPane.alignment="CENTER">
          <children>
