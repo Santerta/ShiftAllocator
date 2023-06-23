@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import shiftAllocator.Agent;
+import shiftAllocator.Allocator;
 import shiftAllocator.Register;
 
 /**
@@ -116,18 +117,18 @@ public class AgentGUIController implements ModalControllerInterface<Agent>,Initi
         
         // Sets the text for responsibilities instead of using R1-R12
         // TODO: Non-static implementation
-        editR1.setText(Register.responsibilities.get(0));
-        editR2.setText(Register.responsibilities.get(1));
-        editR3.setText(Register.responsibilities.get(2));
-        editR4.setText(Register.responsibilities.get(3));
-        editR5.setText(Register.responsibilities.get(4));
-        editR6.setText(Register.responsibilities.get(5));
-        editR7.setText(Register.responsibilities.get(6));
-        editR8.setText(Register.responsibilities.get(7));
-        editR9.setText(Register.responsibilities.get(8));
-        editR10.setText(Register.responsibilities.get(9));
-        editR11.setText(Register.responsibilities.get(10));
-        editR12.setText(Register.responsibilities.get(11));
+        editR1.setText(Allocator.responsibilities.get(0));
+        editR2.setText(Allocator.responsibilities.get(1));
+        editR3.setText(Allocator.responsibilities.get(2));
+        editR4.setText(Allocator.responsibilities.get(3));
+        editR5.setText(Allocator.responsibilities.get(4));
+        editR6.setText(Allocator.responsibilities.get(5));
+        editR7.setText(Allocator.responsibilities.get(6));
+        editR8.setText(Allocator.responsibilities.get(7));
+        editR9.setText(Allocator.responsibilities.get(8));
+        editR10.setText(Allocator.responsibilities.get(9));
+        editR11.setText(Allocator.responsibilities.get(10));
+        editR12.setText(Allocator.responsibilities.get(11));
     }
     
     

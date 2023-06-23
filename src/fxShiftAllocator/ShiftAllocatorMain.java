@@ -3,6 +3,7 @@ package fxShiftAllocator;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import shiftAllocator.Allocator;
 import shiftAllocator.Register;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -30,8 +31,8 @@ public class ShiftAllocatorMain extends Application {
                 if ( !shiftAllocatorCtrl.canClose() ) event.consume();
             });
             
-            Register register = new Register();
-            shiftAllocatorCtrl.setRegister(register);
+            Allocator allocator = new Allocator();
+            shiftAllocatorCtrl.setAllocator(allocator);
             primaryStage.show();
             
             Application.Parameters params = getParameters();

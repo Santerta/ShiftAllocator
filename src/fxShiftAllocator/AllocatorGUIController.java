@@ -21,6 +21,7 @@ import shiftAllocator.Absence;
 import shiftAllocator.Register;
 import shiftAllocator.SailoException;
 import shiftAllocator.Agent;
+import shiftAllocator.Allocator;
 import shiftAllocator.Workshift;
 
 /**
@@ -85,7 +86,7 @@ public class AllocatorGUIController implements Initializable {
     }
 
     
-    @FXML private void handleCreateDistributedShiftsExcel() {
+    @FXML private void handleCreateDistributedShiftsExcel() throws FileNotFoundException {
         createAllocatedShiftsExcel();
     }
     
@@ -162,7 +163,7 @@ public class AllocatorGUIController implements Initializable {
     private String registername = "";
     private Agent chosenAgent;
     private Workshift chosenShift;
-    private Register register;
+    private Allocator allocator;
     private static Agent tempAgent = new Agent();
     
     private void initializeRegister() {
@@ -215,31 +216,31 @@ public class AllocatorGUIController implements Initializable {
     
     
     private void distributeVacantShifts() {
-        int result = register.distributeVacantShifts();
+        int result = allocator.distributeVacantShifts();
         Dialogs.showMessageDialog("" + result + " still vacant workshifts");
         getWorkshift(0);
     }
     
     
-    private void createAllocatedShiftsExcel() {
-        register.createAllocatedShiftsExcel();
+    private void createAllocatedShiftsExcel() throws FileNotFoundException {
+        allocator.createAllocatedShiftsExcel();
     }
     
 
     private void createAbsenceExcel() throws FileNotFoundException, IOException {
-        String message = register.createAbsenceExcel();
+        String message = allocator.createAbsenceExcel();
         Dialogs.showMessageDialog(message);
     }
     
     
     private void downloadAbsenceExcel() {
-        String message = register.downloadAbsenceExcel();
+        String message = allocator.downloadAbsenceExcel();
         Dialogs.showMessageDialog(message);
     }
     
     
     private void createDefaultShifts() throws SailoException {
-        register.createDefaultShifts();
+        allocator.createDefaultShifts();
         getWorkshift(0);
     }
     
@@ -249,7 +250,7 @@ public class AllocatorGUIController implements Initializable {
         if ( row < 0 ) return;
         Absence absence = tableAbsences.getObject();
         if ( absence == null ) return;
-        register.removeAbsence(absence);
+        allocator.removeAbsence(absence);
         showAbsences(chosenAgent);
         int absencesSize = tableAbsences.getItems().size();
         if ( row >= absencesSize ) row = absencesSize-1;
@@ -263,7 +264,7 @@ public class AllocatorGUIController implements Initializable {
         if ( agent == null ) return;
         if ( !Dialogs.showQuestionDialog("Agent removal", "Remove agent: " + agent.getFullName(), "Remove", "Cancel") ) 
                 return;
-        register.removeAgent(agent);
+        allocator.removeAgent(agent);
         int index = chooserAgents.getSelectedIndex();
         getAgent(0);
         chooserAgents.setSelectedIndex(index);
@@ -273,7 +274,7 @@ public class AllocatorGUIController implements Initializable {
     private void removeWorkshift() {
         Workshift shift = chosenShift;
         if ( shift == null ) return;
-        register.removeWorkshift(shift);
+        allocator.removeWorkshift(shift);
         int index = chooserWorkshifts.getSelectedIndex();
         getWorkshift(0);
         chooserWorkshifts.setSelectedIndex(index);
@@ -289,7 +290,7 @@ public class AllocatorGUIController implements Initializable {
     protected String readFile(String name) throws IOException {
         registername = name;
         try {
-            register.readFromFile(name);
+            allocator.readFromFile(name);
             getAgent(0);
             getWorkshift(0);
             return null;
@@ -322,7 +323,7 @@ public class AllocatorGUIController implements Initializable {
      */
     private String save() {
         try {
-            register.save();
+            allocator.save();
             return null;
         } catch ( SailoException ex ) {
             Dialogs.showMessageDialog("There was a problem in saving: " + ex.getMessage());
@@ -349,7 +350,7 @@ public class AllocatorGUIController implements Initializable {
         showShiftStart.setText(chosenShift.getStartTime());
         showShiftEnd.setText(chosenShift.getEndTime());
         showShiftWholeDay.setText(chosenShift.getWholeDayString());
-        showShiftResponsibility.setText(register.getResponsibilityName(chosenShift.getResponsibility()));
+        showShiftResponsibility.setText(allocator.getResponsibilityName(chosenShift.getResponsibility()));
         
         int agentID = chosenShift.getAgentsID();
         if ( chosenShift.getAgentsID() != 0) {
@@ -362,7 +363,7 @@ public class AllocatorGUIController implements Initializable {
     
     
     private String getAgentName(int idNumber) {
-        Agent found = register.findAgent(idNumber);
+        Agent found = allocator.findAgent(idNumber);
         String fullName = found.getFullName();
         return fullName;
     }
@@ -374,7 +375,7 @@ public class AllocatorGUIController implements Initializable {
             Workshift shift;
             shift = WorkshiftGUIController.askWorkshift(null, chosenShift.clone());
             if (shift == null ) return;
-            register.replaceOrAdd(shift);
+            allocator.replaceOrAdd(shift);
             getWorkshift(shift.getID());
         } catch (CloneNotSupportedException e) {
             //
@@ -404,7 +405,7 @@ public class AllocatorGUIController implements Initializable {
             Agent agent;
             agent = AgentGUIController.askForAgent(null, chosenAgent.clone());
             if (agent == null) return;
-            register.replaceOrAdd(agent);
+            allocator.replaceOrAdd(agent);
             getAgent(agent.getIDNumber());
         } catch (CloneNotSupportedException e) {
             //
@@ -416,7 +417,7 @@ public class AllocatorGUIController implements Initializable {
         tableAbsences.clear();
         if (agent == null) return;
         
-        List<Absence> absences = register.getAbsences(agent);
+        List<Absence> absences = allocator.getAbsences(agent);
         if (absences.size() == 0) return;
         for (Absence absence : absences) {
             showAbsence(absence);
@@ -444,7 +445,7 @@ public class AllocatorGUIController implements Initializable {
         try {
             absence = AbsenceGUIController.askForAbsence(null, absence.clone());
             if ( absence == null ) return;
-            register.replaceOrAdd(absence);
+            allocator.replaceOrAdd(absence);
             showAbsences(chosenAgent);
             tableAbsences.selectRow(r);
         } catch (CloneNotSupportedException e) {
@@ -455,28 +456,28 @@ public class AllocatorGUIController implements Initializable {
     
     /**
      * Sets the register that's to be used
-     * @param register that's used
+     * @param allocator that's used
      */
-    public void setRegister(Register register) {
-        this.register = register;
+    public void setAllocator(Allocator allocator) {
+        this.allocator = allocator;
         
-        showViewDate.setValue(this.register.getRegisterDate("view"));
-        showStartDate.setValue(this.register.getRegisterDate("start"));
-        showEndDate.setValue(this.register.getRegisterDate("end"));
+        showViewDate.setValue(this.allocator.getRegisterDate("view"));
+        showStartDate.setValue(this.allocator.getRegisterDate("start"));
+        showEndDate.setValue(this.allocator.getRegisterDate("end"));
     }
     
     
     private void handleDateChange(int field) {
         switch ( field ) {
         case 1:
-            register.setRegisterDate(field, showViewDate.getValue());
+            allocator.setRegisterDate(field, showViewDate.getValue());
             getWorkshift(0);
             break;
         case 2:
-            register.setRegisterDate(field, showStartDate.getValue());
+            allocator.setRegisterDate(field, showStartDate.getValue());
             break;
         case 3:
-            register.setRegisterDate(field, showEndDate.getValue());
+            allocator.setRegisterDate(field, showEndDate.getValue());
             break;
         default:
             System.out.println("IDIOT");
@@ -492,7 +493,7 @@ public class AllocatorGUIController implements Initializable {
         }
         
         chooserWorkshifts.clear();
-        Collection<Workshift> workshifts = register.findWorkshifts(showViewDate.getValue());
+        Collection<Workshift> workshifts = allocator.findWorkshifts(showViewDate.getValue());
         
         /*
         System.out.println(this.register.getWorkshiftsSize());
@@ -526,7 +527,7 @@ public class AllocatorGUIController implements Initializable {
         chooserAgents.clear();
         String criteria = searchCriteria.getText();
         if (criteria.indexOf('*') < 0) criteria = "*" + criteria + "*";
-        Collection<Agent> agents = register.findAgents(criteria, k);
+        Collection<Agent> agents = allocator.findAgents(criteria, k);
         int index = 0;
         int ci = 0;
         for (Agent agent: agents) {
@@ -547,7 +548,7 @@ public class AllocatorGUIController implements Initializable {
         if ( newShift == null ) return;
         newShift.setDate(showViewDate.getValue());
         newShift.register();
-        register.add(newShift);
+        allocator.add(newShift);
         getWorkshift(newShift.getID());
     }
     
@@ -560,7 +561,7 @@ public class AllocatorGUIController implements Initializable {
         newAgent = AgentGUIController.askForAgent(null, newAgent);
         if ( newAgent == null ) return;
         newAgent.register();
-        register.add(newAgent);
+        allocator.add(newAgent);
         getAgent(newAgent.getIDNumber());
     }
     
@@ -574,7 +575,7 @@ public class AllocatorGUIController implements Initializable {
         newAbsence = AbsenceGUIController.askForAbsence(null, newAbsence);
         if ( newAbsence == null ) return;
         newAbsence.register();
-        register.add(newAbsence);
+        allocator.add(newAbsence);
         showAbsences(chosenAgent);
         tableAbsences.selectRow(1000);
         

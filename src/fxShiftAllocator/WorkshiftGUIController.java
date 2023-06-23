@@ -14,6 +14,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import shiftAllocator.Allocator;
 import shiftAllocator.Register;
 import shiftAllocator.Workshift;
 
@@ -95,8 +96,8 @@ public class WorkshiftGUIController implements ModalControllerInterface<Workshif
     
     private void initializeView() {
         cbFields.clear();
-        for (int i = 0; i < Register.responsibilities.size(); i++) {
-            cbFields.add(Register.responsibilities.get(i));
+        for (int i = 0; i < Allocator.responsibilities.size(); i++) {
+            cbFields.add(Allocator.responsibilities.get(i));
         }
         
         // TODO: Create handlers for other events and fields

@@ -19,9 +19,9 @@ public class Agent implements Cloneable {
     private String      defaultState = "";
     private double      shiftIncreaseModifier = 1.0;
     
-    private boolean[] responsibilitiesArray = new boolean[Register.responsibilities.size()];
+    private boolean[] responsibilitiesArray = new boolean[Allocator.responsibilities.size()];
     
-    private double[] amountOfShiftsArray = new double[Register.responsibilities.size()];
+    private double[] amountOfShiftsArray = new double[Allocator.responsibilities.size()];
     private double shiftAmountAll = 0.0;
     
     private ArrayList<LocalDate> allocatedDays = new ArrayList<>();
