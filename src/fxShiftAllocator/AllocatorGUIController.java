@@ -18,7 +18,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import shiftAllocator.Absence;
-import shiftAllocator.Register;
 import shiftAllocator.SailoException;
 import shiftAllocator.Agent;
 import shiftAllocator.Allocator;

@@ -18,7 +18,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import shiftAllocator.Agent;
 import shiftAllocator.Allocator;
-import shiftAllocator.Register;
 
 /**
  * @author Santeri Tammisto
