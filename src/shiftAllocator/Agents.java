@@ -13,9 +13,15 @@ import java.util.Scanner;
 import fi.jyu.mit.ohj2.WildChars;
 
 /**
+ * The Agents class represents a collection of agents and provides methods to manage the agents.
+ * Agents can be added, retrieved, replaced or added, found by identification number or specific fields,
+ * read from a file, saved to a file, and searched using various criteria.
+ * The class also includes methods to get the count of agents, get all members of a team,
+ * find agents with the fewest shifts, find an agent's index based on their ID number,
+ * and remove agents from the collection.
+ *
  * @author Santeri Tammisto
  * @version 11.6.2023
- *
  */
 public class Agents {
     
@@ -26,7 +32,8 @@ public class Agents {
     
     
     /**
-     * Creates initial array
+     * Creates a new instance of the Agents class.
+     * Initializes the agent array with a default capacity.
      */
     public Agents() {
         items = new Agent[MAX_AGENTS];
@@ -34,8 +41,10 @@ public class Agents {
     
     
     /**
-     * Adds the given agent to the next available element.
-     * @param agent The agent to be added to the elements.
+     * Adds the given agent to the collection.
+     * If the collection is full, the capacity is increased.
+     *
+     * @param agent The agent to be added to the collection.
      */
     public void addAgent(Agent agent) {
         if (count >= items.length) {
@@ -52,10 +61,11 @@ public class Agents {
     
     
     /**
-     * Returns a reference to the i-th agent.
-     * @param i the index of the agent reference desired
-     * @return a reference to the agent with the index i
-     * @throws IndexOutOfBoundsException if i is out of the allowed range
+     * Returns a reference to the agent at the specified index.
+     *
+     * @param i The index of the agent reference to be retrieved.
+     * @return The agent at the specified index.
+     * @throws IndexOutOfBoundsException If the index is out of the allowed range.
      */
     public Agent getAgent(int i) throws IndexOutOfBoundsException {
         if (i < 0 || this.count <= i)
@@ -65,9 +75,10 @@ public class Agents {
     
     
     /**
-     * Replaces an agent in the data structure. Takes ownership of the agent.
-     * Searches for a agent with the same identification number. If not found, adds as a new agent.
-     * @param agent reference to the agent to be added.
+     * Replaces an agent in the collection or adds it as a new agent.
+     * The replacement is based on the identification number of the agent.
+     *
+     * @param agent The agent to be replaced or added.
      */
     public void replaceOrAdd(Agent agent) {
         int id = agent.getIDNumber();
@@ -80,10 +91,12 @@ public class Agents {
         this.addAgent(agent);
     }
     
+    
     /**
-     * Searches for an agent in the data structure based on the identification number.
-     * @param idNumber the number used to search for the agent
-     * @return null if no agent with the specified identification number is found, otherwise a reference to the found agent
+     * Searches for an agent in the collection based on the identification number.
+     *
+     * @param idNumber The identification number used to search for the agent.
+     * @return The agent with the specified identification number, or null if not found.
      */
     public Agent findAgent(int idNumber) {
         for (int i = 0; i < count; i++) {
@@ -95,8 +108,11 @@ public class Agents {
         return null;
     }
     
+    
     /**
-     * @return the amount of agents in the register
+     * Returns the number of agents in the collection.
+     *
+     * @return The count of agents in the collection.
      */
     public int getCount() {
         return this.count;
@@ -104,9 +120,10 @@ public class Agents {
     
     
     /**
-     * Reads agents from a file
-     * @param directory directory of the file
-     * @throws SailoException if reading fails
+     * Reads agents from a file and adds them to the collection.
+     *
+     * @param directory The directory of the file.
+     * @throws SailoException If reading from the file fails.
      */
     public void readFromFile(String directory) throws SailoException {
         String name = directory + "/data/agents.dat";
@@ -127,9 +144,10 @@ public class Agents {
     
     
     /**
-     * Saves agents to a file
-     * @param directory directory of the file
-     * @throws SailoException if saving fails
+     * Saves agents to a file.
+     *
+     * @param directory The directory of the file.
+     * @throws SailoException If saving to the file fails.
      */
     public void save(String directory) throws SailoException {
         File ftied = new File(directory + "/data/agents.dat");
@@ -145,9 +163,11 @@ public class Agents {
     
     
     /**
-     * @param clause what is being searched
-     * @param k the index of the field to search by
-     * @return the found items
+     * Searches for agents in the collection based on a specified clause and field index.
+     *
+     * @param clause The search criteria.
+     * @param k      The index of the field to search by.
+     * @return A collection of agents that match the search criteria.
      */
     public Collection<Agent> findAgents(String clause, int k) {
         ArrayList<Agent> found = new ArrayList<Agent>();
@@ -166,8 +186,10 @@ public class Agents {
     
     
     /**
-     * @param teamNumber of the team
-     * @return ArrayList with all the agents in the team in alphabetical order
+     * Returns an ArrayList of all the agents in a specified team, sorted in alphabetical order.
+     *
+     * @param teamNumber The team number.
+     * @return ArrayList containing all the agents in the team in alphabetical order.
      */
     public ArrayList<Agent> getAllMembersOfTeam(int teamNumber){
         ArrayList<Agent> found = new ArrayList<Agent>();
@@ -184,9 +206,11 @@ public class Agents {
 
     
     /**
-     * Searches and returns an ArrayList of agents who have the fewest shifts in the shiftAmountAll attribute / smallest value.
-     * If the loop doesn't find any agents after 30 iterations, it returns null.
-     * @return ArrayList<Integer> containing the identification numbers of the agents
+     * Returns an ArrayList of agents who have the fewest shifts.
+     * The search is based on the shiftAmountAll attribute, where the smallest value indicates the fewest shifts.
+     * If no agents are found after 30 iterations, null is returned.
+     *
+     * @return An ArrayList of agents with the fewest shifts, or null if not found.
      */
     public ArrayList<Agent> findAgentsWithLeastShifts(){
         ArrayList<Agent> found = new ArrayList<Agent>();
@@ -208,9 +232,10 @@ public class Agents {
     
     
     /**
-     * Finds an agents index based on its ID-number
-     * @param id of the agent that's being searched
-     * @return index of the agent if found, -1 if not
+     * Finds the index of an agent in the collection based on its ID number.
+     *
+     * @param id The ID number of the agent to be searched.
+     * @return The index of the agent if found, or -1 if not found.
      */
     public int findIndexWithID(int id) {
         for (int i = 0; i < this.count; i++) {
@@ -221,9 +246,10 @@ public class Agents {
     
     
     /**
-     * Removes given agent from the array and makes it smaller
-     * @param id of the agent
-     * @return 1 if success, 0 if not found
+     * Removes an agent from the collection.
+     *
+     * @param id The ID of the agent to be removed.
+     * @return 1 if the agent is successfully removed, 0 if the agent is not found.
      */
     public int removeAgent(int id) {
         int ind = findIndexWithID(id);

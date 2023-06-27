@@ -7,11 +7,17 @@ import java.util.Comparator;
 import fi.jyu.mit.ohj2.Mjonot;
 
 /**
+ * Represents an agent with various attributes such as ID, name, team number, responsibilities, and shift information.
+ * Provides methods to set and get agent information, manipulate shift amounts, and perform comparisons.
+ * Supports cloning and parsing from a string representation.
+ * 
+ * The class also includes an inner `Comparer` class that implements the `Comparator` interface for comparing agents based on their full names.
+ * 
  * @author Santeri Tammisto
  * @version 11.6.2023
- *
  */
 public class Agent implements Cloneable {
+    
     private int         id;
     private String      firstName = "";
     private String      lastName = "";
@@ -29,25 +35,6 @@ public class Agent implements Cloneable {
     private static int  nextNumber = 1;
     
     
-    
-    /**
-     * Adds a date to the set of allocated days for the agent.
-     * @param date The date to be added as an allocated day.
-     */
-    public void addAllocatedDay(LocalDate date) {
-        this.allocatedDays.add(date);
-    }
-    
-    /**
-     * Checks if the agent has already been allocated points for a specific date.
-     * @param date The date to check for allocated points.
-     * @return {@code true} if the agent has already been allocated points for the date, {@code false} otherwise.
-     */
-    public boolean hasAllocatedDay(LocalDate date) {
-        return allocatedDays.contains(date);
-    }
-    
-    
     /**
      * Default constructor. Initializes the employee's information as empty.
      */
@@ -57,9 +44,30 @@ public class Agent implements Cloneable {
     
     
     /**
-     * Returns the responsibility value of the employee corresponding to the specified index as a boolean value.
-     * @param index The index of the responsibility being searched in the responsibility array
-     * @return true if the responsibility exists, false otherwise
+     * Adds a date to the set of allocated days for the agent.
+     * 
+     * @param date the date to be added as an allocated day
+     */
+    public void addAllocatedDay(LocalDate date) {
+        this.allocatedDays.add(date);
+    }
+    
+    /**
+     * Checks if the agent has already been allocated points for a specific date.
+     * 
+     * @param date the date to check for allocated points
+     * @return {@code true} if the agent has already been allocated points for the date, {@code false} otherwise
+     */
+    public boolean hasAllocatedDay(LocalDate date) {
+        return allocatedDays.contains(date);
+    }
+    
+    
+    /**
+     * Returns the responsibility value of the agent corresponding to the specified index as a boolean value.
+     * 
+     * @param index the index of the responsibility being searched in the responsibility array
+     * @return {@code true} if the responsibility exists, {@code false} otherwise
      */
     public boolean getResponsibilityByIndex(int index) {
         return this.responsibilitiesArray[index];
@@ -68,6 +76,7 @@ public class Agent implements Cloneable {
     
     /**
      * Sets the k-th responsibility value to either true or false.
+     * 
      * @param k the index of the boolean value to be changed
      * @param newValue the boolean value
      * @return null if the setting is successful, otherwise the corresponding error message
@@ -85,6 +94,7 @@ public class Agent implements Cloneable {
      * 3 = team number
      * 4 = default state
      * 5 = shift increase modifier
+     * 
      * @param k the index of the field for which the value is being set
      * @param newValue the string value to be set as the field's value
      * @return null if the setting is successful, otherwise the corresponding error message
@@ -121,6 +131,7 @@ public class Agent implements Cloneable {
      * 3 = team number
      * 4 = default state
      * 5 = shift increase modifier
+     * 
      * @param k the index of the field whose content is returned
      * @return the content of the field as a string
      */
@@ -139,6 +150,7 @@ public class Agent implements Cloneable {
     
     /**
      * Returns the question corresponding to the k-th field.
+     * 
      * @param k the index of the field for which the question is returned
      * @return the question corresponding to the k-th field
      */
@@ -156,7 +168,9 @@ public class Agent implements Cloneable {
     
     
     /**
-     * @return how many shifts this agent has all together
+     * Returns the total number of shifts for the agent.
+     * 
+     * @return the total number of shifts for the agent
      */
     public double getShiftAmountAll() {
         return this.shiftAmountAll;
@@ -164,7 +178,9 @@ public class Agent implements Cloneable {
     
     
     /**
-     * @return the length of responsibilites array
+     * Returns the length of the responsibilities array.
+     * 
+     * @return the length of the responsibilities array
      */
     public int getResponsibilitiesArrayLength() {
         return this.responsibilitiesArray.length;
@@ -172,8 +188,10 @@ public class Agent implements Cloneable {
 
     
     /**
-     * @param index the shift that's value is asked
-     * @return the amount of shifts this agent has in the index-th responsibility
+     * Returns the amount of shifts the agent has in the specified responsibility index.
+     * 
+     * @param index the index of the responsibility
+     * @return the amount of shifts the agent has in the specified responsibility index
      */
     public double getShiftAmount(int index) {
         return this.amountOfShiftsArray[index];
@@ -181,9 +199,8 @@ public class Agent implements Cloneable {
     
     
     /**
-     * Increases shiftAmountAll by (one * modifier) and particular shift by 1.0.
-     * If agent has shiftIncreaseModifier
-     * for example at 2.0, he will get twice less shifts assigned to him.
+     * Increases the number of shifts for the agent by one in the specified responsibility index.
+     * 
      * @param shiftIndex the shift thats amount is to be increased
      */
     public void increaseShiftsByOne(int shiftIndex) {
@@ -192,8 +209,9 @@ public class Agent implements Cloneable {
     }
     
     /**
-     * Increases shiftAmountAll by how much an absence of whole day is worth
-     * @param absenceWorth how much shiftAmountAll is increased
+     * Increases the total number of shifts for the agent by the specified absence worth.
+     * 
+     * @param absenceWorth the value by which the total number of shifts is increased
      */
     public void increaseShiftsByAbsenceModifier(double absenceWorth) {
         this.shiftAmountAll += absenceWorth;
@@ -201,8 +219,9 @@ public class Agent implements Cloneable {
     
     
     /**
-     * Returns agents field amount for searches
-     * @return the amount of fields
+     * Returns the number of fields in the agent.
+     * 
+     * @return the number of fields in the agent
      */
     public int getFields() {
         return 6;
@@ -210,14 +229,20 @@ public class Agent implements Cloneable {
     
     
     /**
-     * First field that's reasonable to ask
-     * @return index of that field
+     * Returns the index of the first reasonable field to ask.
+     * 
+     * @return the index of the first reasonable field to ask
      */
     public int firstField() {
         return 1;
     }
     
     
+    /**
+     * Clones the agent object.
+     * 
+     * @return the cloned agent object
+     */
     @Override
     public Agent clone() throws CloneNotSupportedException {
         Agent newAgent;
@@ -227,9 +252,9 @@ public class Agent implements Cloneable {
 
     
     /**
-     * Sets the ID and ensures that the next number (nextNumber) is always greater than 
-     * the current maximum.
-     * @param nr The ID to be set.
+     * Sets the ID and ensures that the next number (nextNumber) is always greater than the current maximum.
+     * 
+     * @param nr the ID to be set
      */
     private void setIDNumber(int nr) {
         this.id = nr;
@@ -238,8 +263,9 @@ public class Agent implements Cloneable {
     
     
     /**
-     * Provides the next ID number for an employee.
-     * @return the ID of the registered employee
+     * Provides the next ID number for an agent.
+     * 
+     * @return the ID of the registered agent
      */
     public int register() {
         this.id = nextNumber;
@@ -248,7 +274,9 @@ public class Agent implements Cloneable {
     }
     
     /**
-     * @return ID of the agent
+     * Returns the ID of the agent.
+     * 
+     * @return the ID of the agent
      */
     public int getIDNumber() {
         return this.id;
@@ -256,7 +284,9 @@ public class Agent implements Cloneable {
     
     
     /**
-     * @return Workers full name as "firstName lastName"
+     * Returns the full name of the agent.
+     * 
+     * @return the full name of the agent as "firstName lastName"
      */
     public String getFullName() {
         return this.firstName + " " + this.lastName;
@@ -264,7 +294,9 @@ public class Agent implements Cloneable {
 
     
     /**
-     * @return agents team number as int
+     * Returns the team number of the agent.
+     * 
+     * @return the team number of the agent as an integer
      */
     public int getTeamNumber() {
         return this.teamNumber;
@@ -272,8 +304,10 @@ public class Agent implements Cloneable {
 
     
     /**
-     * @param index of the responsibility
-     * @return "Yes" or "No" as a string depending on if agent has responsibility
+     * Returns "Yes" or "No" as a string depending on whether the agent has the specified responsibility.
+     * 
+     * @param index the index of the responsibility
+     * @return "Yes" if the agent has the responsibility, "No" otherwise
      */
     public String getResponsibilityYesOrNo(int index) {
         if ( this.getResponsibilityByIndex(index) == true ) return "Yes";
@@ -281,6 +315,11 @@ public class Agent implements Cloneable {
     }
     
     
+    /**
+     * Returns the string representation of the agent object.
+     * 
+     * @return the string representation of the agent
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -297,9 +336,9 @@ public class Agent implements Cloneable {
 
     
     /**
-     * Retrieves the employee's information from a string separated by "|".
-     * Ensures that the next number (nextNumber) is greater than the upcoming ID.
-     * @param row The string from which the employee's information is extracted.
+     * Parses the agent's information from a string representation.
+     * 
+     * @param row the string from which the agent's information is extracted
      */
     public void parse(String row) {
         StringBuilder sb = new StringBuilder(row);
@@ -316,9 +355,17 @@ public class Agent implements Cloneable {
     
 
     /**
-     * Class that can compare to agents
+     * A comparator class that compares agents based on their full names.
      */
     public static class Comparer implements Comparator<Agent>{
+        
+        /**
+         * Compares two agents based on their full names.
+         * 
+         * @param agent1 the first agent to compare
+         * @param agent2 the second agent to compare
+         * @return a negative integer if agent1 is less than agent2, zero if they are equal, a positive integer otherwise
+         */
         @Override
         public int compare(Agent agent1, Agent agent2) {
             return agent1.getFullName().compareTo(agent2.getFullName());

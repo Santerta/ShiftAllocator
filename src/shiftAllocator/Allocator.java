@@ -34,9 +34,18 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 /**
+ * The Allocator class is responsible for managing and allocating shifts to agents based on certain criteria.
+ * It extends the Register class.
+ * 
+ * Responsibilities:
+ * - Creating default workshifts based on the entered start date, end date, and weekdays within that range.
+ * - Adding shift reservations to the reservedShifts list.
+ * - Retrieving the length of the reservedShifts list.
+ * - Reading data from files, including settings, responsibilities, and agent information.
+ * - Setting and getting register dates.
+ * 
  * @author Santeri Tammisto
  * @version 23.6.2023
- *
  */
 public class Allocator extends Register {
     
@@ -69,7 +78,8 @@ public class Allocator extends Register {
     
     
     /**
-     * Default constructor
+     * Default constructor for the Allocator class.
+     * Initializes instance variables with default values.
      */
     public Allocator() {
         
@@ -87,13 +97,10 @@ public class Allocator extends Register {
     
     
     /**
-     * @param typeOfDate the date that is asked as string.
-     * 
-     * view = viewDate
-     * start = startDate
-     * end = endDate
-     * iterator = iteratorDate
-     * @return LocalDate-object based on the specified typeOfDate-parameter.
+     * Retrieves the specified register date based on the given typeOfDate parameter.
+     *
+     * @param typeOfDate the type of date to retrieve (view, start, end, iterator)
+     * @return the LocalDate object corresponding to the specified typeOfDate, or null if invalid typeOfDate is provided.
      */
     public LocalDate getRegisterDate(String typeOfDate) {
         switch (typeOfDate) {
@@ -112,11 +119,10 @@ public class Allocator extends Register {
     
     
     /**
-     * @param typeOfDate the date that is to be changed.
-     * 1 = viewDate
-     * 2 = starDate
-     * 3 = endDate
-     * @param givenDate new date
+     * Sets the specified register date to the given date value.
+     *
+     * @param typeOfDate the type of date to set (1 = viewDate, 2 = startDate, 3 = endDate)
+     * @param givenDate  the new date value to set
      */
     public void setRegisterDate(int typeOfDate, LocalDate givenDate) {
         switch (typeOfDate) {
@@ -137,6 +143,7 @@ public class Allocator extends Register {
     
     /**
      * Creates default workshifts based on the entered start date, end date, and weekdays within that range.
+     *
      * @throws SailoException if reading default shifts from file fails
      */
     public void createDefaultShifts() throws SailoException {
@@ -150,8 +157,9 @@ public class Allocator extends Register {
     
     
     /**
-     * Add given shift reservation to reservedShift-list
-     * @param shift that's being reserved
+     * Adds the given shift reservation to the reservedShifts list.
+     *
+     * @param shift the shift to be reserved
      */
     private void addShiftReservation(ReservedShift shift) {
         this.reservedShifts.add(shift);
@@ -159,7 +167,9 @@ public class Allocator extends Register {
     
     
     /**
-     * @return the length of reserved shifts -list
+     * Retrieves the length of the reserved shifts list.
+     *
+     * @return the length of the reserved shifts list
      */
     private int getReservedShiftsLength() {
         return this.reservedShifts.size();
@@ -167,9 +177,11 @@ public class Allocator extends Register {
     
     
     /**
-     * @param givenDirectory as
-     * @throws SailoException asd
-     * @throws IOException  asd
+     * Reads data from files including the directory, default shifts, responsibilities, and settings.
+     *
+     * @param givenDirectory the directory to read data from
+     * @throws SailoException if reading from files fails
+     * @throws IOException    if an I/O error occurs while reading from files
      */
     public void readFromFile(String givenDirectory) throws SailoException, IOException {
         this.directory = "./" + givenDirectory;
@@ -206,6 +218,12 @@ public class Allocator extends Register {
     }
     
     
+    /**
+     * Creates the settings file if it does not exist.
+     *
+     * @param settingsFilePath the path of the settings file
+     * @throws SailoException if creating the settings file fails
+     */
     private void createSettingsFile(Path settingsFilePath) throws SailoException {
         if (Files.exists(settingsFilePath)) {
             return; // File already exists
@@ -220,6 +238,12 @@ public class Allocator extends Register {
     }
     
     
+    /**
+     * Retrieves the absence worth value from the settings file.
+     *
+     * @param settingsFilePath the path of the settings file
+     * @throws IOException if an I/O error occurs while reading the settings file
+     */
     private void getAbsenceWorthFromFile(Path settingsFilePath) throws IOException {
         
         try (Scanner fileInput = new Scanner(settingsFilePath)) {
@@ -238,6 +262,12 @@ public class Allocator extends Register {
     }
     
     
+    /**
+     * Creates a directory at the specified path.
+     *
+     * @param directoryPath the path of the directory to create
+     * @throws SailoException if creating the directory fails
+     */
     private void createDirectory(Path directoryPath) throws SailoException {
         try {
             Files.createDirectories(directoryPath);
@@ -247,6 +277,12 @@ public class Allocator extends Register {
     }
     
     
+    /**
+     * Creates default shift files in the specified directory.
+     *
+     * @param defaultShiftsDirectoryPath the path of the directory to create default shift files in
+     * @throws IOException if an I/O error occurs while creating the default shift files
+     */
     private void createDefaultShiftFiles(Path defaultShiftsDirectoryPath) throws IOException {
         
         Files.createDirectories(defaultShiftsDirectoryPath);
@@ -262,6 +298,13 @@ public class Allocator extends Register {
     }
     
     
+    /**
+     * Creates the responsibilities file if it does not exist.
+     *
+     * @param responsibilitiesFilePath    the path of the responsibilities file
+     * @param responsibilitiesAmount      the number of responsibilities to create
+     * @throws SailoException if creating the responsibilities file fails
+     */
     private void createResponsibilitiesFile(Path responsibilitiesFilePath, int responsibilitiesAmount) throws SailoException {
         
         if (Files.exists(responsibilitiesFilePath)) {
@@ -278,7 +321,12 @@ public class Allocator extends Register {
         
     }
     
-    
+    /**
+     * Reads responsibilities from the responsibilities file and adds them to the responsibilities list.
+     *
+     * @param responsibilitiesFilePath the path of the responsibilities file
+     * @throws IOException if an I/O error occurs while reading the responsibilities file
+     */
     private void readResponsibilitiesFromFile(Path responsibilitiesFilePath) throws IOException {
         try (Scanner fileInput = new Scanner(responsibilitiesFilePath)) {
             while (fileInput.hasNextLine()) {
@@ -293,8 +341,9 @@ public class Allocator extends Register {
     
     /**
      * Checks if the agent is available on the given date by checking if the agent already has a shift assigned.
-     * @param agent The agent for whom the availability is being checked.
-     * @param givenDate The date for which the availability is being checked.
+     *
+     * @param agent      The agent for whom the availability is being checked.
+     * @param givenDate  The date for which the availability is being checked.
      * @return {@code true} if the agent is available, {@code false} if the agent already has a shift assigned.
      */
     private boolean agentHasNoShifts(Agent agent, LocalDate givenDate) {
@@ -311,8 +360,10 @@ public class Allocator extends Register {
     
     
     /**
-     * @param number of the responsibility
-     * @return name of the responsibility 
+     * Retrieves the name of the responsibility based on the given number.
+     *
+     * @param number the number of the responsibility
+     * @return the name of the responsibility
      */
     public String getResponsibilityName(int number) {
         return responsibilities.get(number);
@@ -320,8 +371,9 @@ public class Allocator extends Register {
     
     
     /**
-     * Increases shiftAmountAll by how much an absence of whole day is worth
-     * @param agent that's absent
+     * Increases the total shift count of the agent by the value of the absenceWorth.
+     *
+     * @param agent the agent who is absent
      */
     public void increaseShiftsByAbsence(Agent agent) {
         agent.increaseShiftsByAbsenceModifier(absenceWorth);
@@ -329,6 +381,7 @@ public class Allocator extends Register {
     
     
     /**
+     * TODO: Make the method more readable and create private methods to clarify the code
      * Creates an Excel file containing the allocated shifts based on the current state of the Allocator.
      * The Excel file includes information about agents, dates, weekdays, absences, and shifts.
      * The file is saved in the specified directory with the naming format "{month}_SHIFTS.xlsx".
@@ -497,8 +550,8 @@ public class Allocator extends Register {
     
     
     /**
+     * TODO: Better exception and error handling, create private methods to make this more readable and clear
      * Downloads absence and reservation data from an Excel file and processes it to create absence records and shift reservations.
-     * TODO: Better exception and error handling
      *
      * @return a message indicating the result of the download process
      */
@@ -606,13 +659,13 @@ public class Allocator extends Register {
     
     
     /**
+     * TODO: Private methods to clarify this one and to make this more readable
      * Creates an Excel file for recording absences.
      *
      * @return a message indicating the success of creating the Excel file
      * @throws FileNotFoundException if the file path is not found
      * @throws IOException           if an I/O error occurs while creating the Excel file
      */
-    
     public String createAbsenceExcel() throws FileNotFoundException, IOException {
         String month = this.startDate.getMonth().toString();
         String fileName = this.directory + "/" + month + "_ABSENCES.xlsx";
@@ -704,6 +757,12 @@ public class Allocator extends Register {
     }
     
     
+    /**
+     * Reads unique shifts from files and returns them as an ArrayList.
+     *
+     * @return the list of unique shifts
+     * @throws SailoException if there is an error reading the files
+     */
     private ArrayList<String> readUniqueShiftsFromFiles() throws SailoException{
         Set<String> uniqueShiftsSet = new LinkedHashSet<>();  // Uses LinkedHashSet to preserve insertion order
         
@@ -782,6 +841,12 @@ public class Allocator extends Register {
     }
     
     
+    /**
+     * Retrieves the agent to assign for the given workshift based on priority queues.
+     *
+     * @param shift the workshift to assign the agent for
+     * @return the agent to assign, or {@code null} if no eligible agent is found
+     */
     private Agent getAgentForShift(Workshift shift) {
         PriorityQueue<Agent> queue = this.priorityQueues.get(shift.getResponsibility());
         List<Agent> eligibleAgents = new ArrayList<>();
@@ -821,6 +886,9 @@ public class Allocator extends Register {
     }
     
     
+    /**
+     * Creates priority queues for each responsibility.
+     */
     private void createPriorityQueues() {
         // Create a priority queue for each responsibility
         for (int i = 0 ; i < responsibilities.size() ; i++) {
@@ -834,6 +902,9 @@ public class Allocator extends Register {
     }
     
     
+    /**
+     * Adds agents to the priority queues based on their responsibilities.
+     */
     private void addAgentsToPriorityQueues() {
         
         for (int i = 0 ; i < this.agents.getCount() ; i++) {
@@ -890,8 +961,10 @@ public class Allocator extends Register {
     
     
     /**
-     * @param teamNumber of the team
-     * @return ArrayList with all the agents in the team in alphabetical order
+     * Retrieves all the members of a team in alphabetical order.
+     *
+     * @param teamNumber the number of the team
+     * @return an ArrayList containing all the agents in the team in alphabetical order
      */
     private ArrayList<Agent> getAllMembersOfTeam(int teamNumber){
         return this.agents.getAllMembersOfTeam(teamNumber);
@@ -902,10 +975,7 @@ public class Allocator extends Register {
     
     
     /**
-     * Own class for reserved shifts
-     * @author Santeri Tammisto
-     * @version 14.6.2023
-     *
+     * A class representing a reserved shift.
      */
     public class ReservedShift {
         
@@ -915,7 +985,7 @@ public class Allocator extends Register {
         
         
         /**
-         * Default constructor
+         * Constructs a ReservedShift object with default values.
          */
         public ReservedShift() {
             //
@@ -923,20 +993,23 @@ public class Allocator extends Register {
         
         
         /**
-         * Constructor with parameters
-         * @param shiftname name of the shift that is being reserved
-         * @param shiftdate date of the shift
-         * @param agentsID ID of the agent that's reserving the shift
+         * Constructs a ReservedShift object with the given parameters.
+         *
+         * @param shiftName the name of the reserved shift
+         * @param shiftDate the date of the reserved shift
+         * @param agentID   the ID of the agent reserving the shift
          */
-        public ReservedShift(String shiftname, LocalDate shiftdate, int agentsID) {
-            this.shiftName = shiftname;
-            this.shiftDate = shiftdate;
-            this.agentID = agentsID;
+        public ReservedShift(String shiftName, LocalDate shiftDate, int agentID) {
+            this.shiftName = shiftName;
+            this.shiftDate = shiftDate;
+            this.agentID = agentID;
         }
         
         
         /**
-         * @return name of the reserved shift
+         * Returns the name of the reserved shift.
+         *
+         * @return the name of the reserved shift
          */
         public String getShiftName() {
             return this.shiftName;
@@ -944,7 +1017,9 @@ public class Allocator extends Register {
         
         
         /**
-         * @return date of the reserved shift
+         * Returns the date of the reserved shift.
+         *
+         * @return the date of the reserved shift
          */
         public LocalDate getDateOfReservedShift() {
             return this.shiftDate;
@@ -952,7 +1027,9 @@ public class Allocator extends Register {
         
         
         /**
-         * @return agents ID that has reserved the shift
+         * Returns the ID of the agent reserving the shift.
+         *
+         * @return the ID of the agent reserving the shift
          */
         public int getAgentID() {
             return this.agentID;

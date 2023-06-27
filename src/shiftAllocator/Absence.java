@@ -9,9 +9,11 @@ import verifiers.TimeFormatVerifier;
 import verifiers.DateFormatVerifier;
 
 /**
+ * Represents an absence for an agent, including information such as date, start time, stop time,
+ * whole day flag, explanation, and agent ID.
+ * 
  * @author Santeri Tammisto
  * @version 10.6.2023
- *
  */
 public class Absence implements Cloneable {
     
@@ -27,7 +29,8 @@ public class Absence implements Cloneable {
     
     /**
      * Sets the ID and ensures that it is always greater than the current maximum nextNumber.
-     * @param nr The ID to be set.
+     * 
+     * @param number the ID to be set
      */
     private void setID(int number) {
         this.id = number;
@@ -36,7 +39,7 @@ public class Absence implements Cloneable {
     
     
     /**
-     * Default constructor, Initializes absence information as empty.
+     * Default constructor. Initializes absence information as empty.
      */
     public Absence() {
         LocalDate dateToSet = LocalDate.now();
@@ -49,8 +52,9 @@ public class Absence implements Cloneable {
     }
     
     /**
-     * Initializes absence for specific agent
-     * @param agentsID ID of the agent
+     * Initializes absence for a specific agent.
+     * 
+     * @param agentsID the ID of the agent
      */
     public Absence(int agentsID) {
         LocalDate dateToSet = LocalDate.now();
@@ -66,13 +70,14 @@ public class Absence implements Cloneable {
     
     
     /**
-     * Creates an absence with given information
-     * @param date The provided date
-     * @param startTime The provided start time
-     * @param endTime The provided end time
-     * @param wholeDay Indicates if it's a full-day absence
-     * @param explanation The explanation of the absence
-     * @param agentID The ID of the agent to whom the absence is created
+     * Creates an absence with the given information.
+     * 
+     * @param date        the provided date
+     * @param startTime   the provided start time
+     * @param endTime     the provided end time
+     * @param wholeDay    indicates if it's a full-day absence
+     * @param explanation the explanation of the absence
+     * @param agentID     the ID of the agent to whom the absence is created
      */
     public Absence(LocalDate date, LocalTime startTime, LocalTime endTime, boolean wholeDay, String explanation, int agentID) {
         this.date = date;
@@ -83,7 +88,13 @@ public class Absence implements Cloneable {
         this.agentID = agentID;
     }
     
-    
+   
+    /**
+     * Creates a copy of the Absence object.
+     * 
+     * @return a clone of the Absence object
+     * @throws CloneNotSupportedException if cloning is not supported
+     */
     @Override
     public Absence clone() throws CloneNotSupportedException {
         Absence newTemp;
@@ -93,10 +104,11 @@ public class Absence implements Cloneable {
     
     
     /**
-     * Set the value of the k-th field to the provided string value
-     * @param k Which field's value is being set
-     * @param newString The string value to be set as the field's value
-     * @return null if the setting is successfull, otherwise the corresponding error message.
+     * Sets the value of the specified field to the provided string value.
+     * 
+     * @param k         which field's value is being set
+     * @param newString the string value to be set as the field's value
+     * @return {@code null} if the setting is successful, otherwise the corresponding error message
      */
     public String setValueFor(int k, String newString) {
         String tString = newString.trim();
@@ -147,7 +159,9 @@ public class Absence implements Cloneable {
     
     
     /**
-     * @return Start-time in string-format
+     * Returns the start time in string format.
+     * 
+     * @return the start time in string format
      */
     public String getStartTime() {
         return this.startTime.toString();
@@ -155,7 +169,9 @@ public class Absence implements Cloneable {
     
     
     /**
-     * @return Stop-time in string-format
+     * Returns the stop time in string format.
+     * 
+     * @return the stop time in string format
      */
     public String getStopTime() {
         return this.stopTime.toString();
@@ -163,7 +179,9 @@ public class Absence implements Cloneable {
     
     
     /**
-     * @return Start-time in LocalTime
+     * Returns the start time in LocalTime.
+     * 
+     * @return the start time in LocalTime
      */
     public LocalTime getStarTimeLT() {
         return this.startTime;
@@ -171,7 +189,9 @@ public class Absence implements Cloneable {
     
     
     /**
-     * @return Stop-time in LocalTime
+     * Returns the stop time in LocalTime.
+     * 
+     * @return the stop time in LocalTime
      */
     public LocalTime getStopTimeLT() {
         return this.stopTime;
@@ -179,7 +199,9 @@ public class Absence implements Cloneable {
     
     
     /**
-     * @return boolean-value if wholeDayFlag is true or false
+     * Returns the whole day flag value.
+     * 
+     * @return {@code true} if the whole day flag is set, {@code false} otherwise
      */
     public boolean getWholeDayFlag() {
         return this.wholeDayFlag;
@@ -187,7 +209,9 @@ public class Absence implements Cloneable {
     
     
     /**
-     * @return explanation for the absence in String-format
+     * Returns the explanation for the absence in string format.
+     * 
+     * @return the explanation for the absence
      */
     public String getExplanation() {
         return this.explanation;
@@ -195,7 +219,9 @@ public class Absence implements Cloneable {
     
     
     /**
-     * @return date of the absence
+     * Returns the date of the absence.
+     * 
+     * @return the date of the absence
      */
     public LocalDate getDate() {
         return this.date;
@@ -203,8 +229,9 @@ public class Absence implements Cloneable {
     
     
     /**
-     * Antaa poissaololle seuraavan id-numeron.
-     * @return rekisteröidyn poissaolon id
+     * Registers the absence and assigns the next available ID.
+     * 
+     * @return the ID of the registered absence
      */
     public int register() {
         this.id = nextNumber;
@@ -214,7 +241,9 @@ public class Absence implements Cloneable {
     
     
     /**
-     * @return ID of the absence
+     * Returns the ID of the absence.
+     * 
+     * @return the ID of the absence
      */
     public int getID() {
         return this.id;
@@ -222,7 +251,9 @@ public class Absence implements Cloneable {
     
     
     /**
-     * @return ID of the agent that has the absence
+     * Returns the ID of the agent who has the absence.
+     * 
+     * @return the ID of the agent who has the absence
      */
     public int getAgentsID() {
         return this.agentID;
@@ -231,7 +262,8 @@ public class Absence implements Cloneable {
     
     /**
      * Returns the absence information as a string that can be saved to a file.
-     * @return Absence information as a string separated by vertical bars
+     * 
+     * @return the absence information as a string separated by vertical bars
      */
     @Override
     public String toString() {
@@ -247,9 +279,10 @@ public class Absence implements Cloneable {
     
     
     /**
-     * Retrieves absence information from a string separated by vertical bars.
+     * Parses the absence information from a string separated by vertical bars.
      * Ensures that the nextNumber is greater than the upcoming identifier.
-     * @param row The row from which the absence information is taken.
+     * 
+     * @param row the row from which the absence information is taken
      */
     public void parse(String row) {
         StringBuffer sb = new StringBuffer(row);
@@ -264,7 +297,9 @@ public class Absence implements Cloneable {
     
     
     /**
-     * @return Weekday of the absence as a string
+     * Returns the weekday of the absence as a string.
+     * 
+     * @return the weekday of the absence as a string
      */
     public String getWeekdayOfAbsence() {
         return this.date.getDayOfWeek().toString();

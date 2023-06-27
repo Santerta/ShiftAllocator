@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
+ * Represents a collection of absences. Allows adding, replacing, removing, and retrieving absences.
+ * Provides methods to read absences from a file, save absences to a file, and manipulate absences.
+ * 
  * @author Santeri Tammisto
  * @version 10.6.2023
- *
  */
 public class Absences {
     
@@ -21,7 +23,7 @@ public class Absences {
     
     
     /**
-     * Initialize
+     * Initializes an empty Absences object.
      */
     public Absences() {
         // 
@@ -31,7 +33,8 @@ public class Absences {
     /**
      * Replaces the absence in the data structure. Takes ownership of the absence.
      * Searches for an absence with the same ID. If not found, adds it as a new absence.
-     * @param absence Reference to the absence to be added.
+     * 
+     * @param absence the reference to the absence to be added or replaced
      */
     public void replaceOrAdd(Absence absence) {
         int id = absence.getID();
@@ -46,7 +49,9 @@ public class Absences {
     
     
     /**
-     * @param absence to be added
+     * Adds an absence to the collection.
+     * 
+     * @param absence the absence to be added
      */
     public void add(Absence absence) {
         items.add(absence);
@@ -54,9 +59,10 @@ public class Absences {
     
     
     /**
-     * Reads absences from directory
-     * @param directory Files directory
-     * @throws SailoException if reading gives an error
+     * Reads absences from a file in the specified directory.
+     * 
+     * @param directory the directory where the file is located
+     * @throws SailoException if reading the file gives an error
      */
     public void readFromFile(String directory) throws SailoException {
         String name = directory + "/absences.dat";
@@ -76,8 +82,9 @@ public class Absences {
     
     
     /**
-     * Saves absences to a file
-     * @param directory of the saveable file
+     * Saves absences to a file in the specified directory.
+     * 
+     * @param directory the directory where the file is saved
      * @throws SailoException if saving fails
      */
     public void save(String directory) throws SailoException {
@@ -93,9 +100,10 @@ public class Absences {
     
     
     /**
-     * Retrieves all absences of a single employee.
-     * @param agentsID The ID of the agent whose absences are being retrieved.
-     * @return List containing references to the found absences
+     * Retrieves all absences of a single employee with the specified agent ID.
+     * 
+     * @param agentsID the ID of the agent whose absences are being retrieved
+     * @return a list containing references to the found absences
      */
     public List<Absence> getAbsences(int agentsID) {
         List<Absence> found = new ArrayList<Absence>();
@@ -108,8 +116,9 @@ public class Absences {
     
     /**
      * Removes the provided absence from the list.
-     * @param absence The absence to be removed.
-     * @return true if successful, false otherwise.
+     * 
+     * @param absence the absence to be removed
+     * @return {@code true} if removal is successful, {@code false} otherwise
      */
     public boolean remove(Absence absence) {
         boolean ret = this.items.remove(absence);
@@ -118,15 +127,16 @@ public class Absences {
     
     
     /**
-     * Removes all absences that have the given agents ID
-     * @param agentsID The ID of the agent that absences are to be removed
-     * @return The number of absences removed
+     * Removes all absences that have the given agent ID.
+     * 
+     * @param agentsID the ID of the agent whose absences are to be removed
+     * @return the number of absences removed
      */
     public int removeAgentsAbsences(int agentsID) {
         int n = 0;
         for (Iterator<Absence> it = this.items.iterator(); it.hasNext();) {
-            Absence poissa = it.next();
-            if ( poissa.getAgentsID() == agentsID ) {
+            Absence absence = it.next();
+            if ( absence.getAgentsID() == agentsID ) {
                 it.remove();
                 n++;
             }

@@ -12,16 +12,18 @@ import java.util.Collections;
 import java.util.Scanner;
 
 /**
+ * The Workshifts class represents a collection of workshifts.
+ * It provides methods for managing and manipulating the workshifts.
+ * 
  * @author Santeri Tammisto
  * @version 10.6.2023
- *
  */
 public class Workshifts {
     
     private ArrayList<Workshift> items = new ArrayList<Workshift>();
     
     /**
-     * Initialization
+     * Initializes a new instance of the Workshifts class.
      */
     public Workshifts() {
         //
@@ -29,9 +31,11 @@ public class Workshifts {
     
     
     /**
-     * Replaces the shift in the data structure. Takes ownership of the shift.
-     * Searches for a shift with the same ID. If not found, adds it as a new shift.
-     * @param shift Reference to the shift to be added.
+     * Replaces the existing workshift in the data structure or adds it as a new workshift.
+     * If a workshift with the same ID already exists, it is replaced with the provided workshift.
+     * If a workshift with the same ID does not exist, the provided workshift is added to the collection.
+     * 
+     * @param shift The workshift to be added or replaced
      */
     public void replaceOrAdd(Workshift shift) {
         int id = shift.getID();
@@ -46,8 +50,9 @@ public class Workshifts {
     
     
     /**
-     * Adds given workshift to workshifts
-     * @param shift to be added
+     * Adds a workshift to the collection.
+     * 
+     * @param shift The workshift to be added
      */
     public void add(Workshift shift) {
         this.items.add(shift);
@@ -55,9 +60,10 @@ public class Workshifts {
     
     
     /**
-     * Returns a reference to i-th shift in workshifts
-     * @param i index of the shift
-     * @return shift that's found
+     * Returns the workshift at the specified index in the collection.
+     * 
+     * @param i The index of the workshift
+     * @return The workshift at the specified index
      */
     public Workshift getShift(int i){
         return this.items.get(i);
@@ -65,7 +71,9 @@ public class Workshifts {
     
     
     /**
-     * @return size of workshifts
+     * Returns the size of the workshift collection.
+     * 
+     * @return The size of the workshift collection
      */
     public int getSize() {
         return this.items.size();
@@ -73,9 +81,10 @@ public class Workshifts {
     
     
     /**
-     * Reads workshifts from a file
-     * @param directory of the file
-     * @throws SailoException if it fails
+     * Reads workshifts from a file.
+     * 
+     * @param directory The directory of the file
+     * @throws SailoException if reading fails
      */
     public void readFromFile(String directory) throws SailoException {
         String name = directory + "/workshifts.dat";
@@ -95,8 +104,9 @@ public class Workshifts {
     
 
     /**
-     * Saves workshifts to a file
-     * @param directory of the file to be saved
+     * Saves workshifts to a file.
+     * 
+     * @param directory The directory of the file to be saved
      * @throws SailoException if saving fails
      */
     public void save(String directory) throws SailoException {
@@ -112,8 +122,10 @@ public class Workshifts {
     
     
     /**
-     * @param givenDate to be searched
-     * @return workshifts that are found for that date
+     * Finds workshifts for the specified date.
+     * 
+     * @param givenDate The date to search for workshifts
+     * @return A collection of workshifts found for the specified date
      */
     public Collection<Workshift> find(LocalDate givenDate){
         ArrayList<Workshift> found = new ArrayList<Workshift>();
@@ -130,9 +142,10 @@ public class Workshifts {
     
     
     /**
-     * Removes the given workshift from workshifts
-     * @param shift to be removed
-     * @return true if success, fail if not
+     * Removes the specified workshift from the collection.
+     * 
+     * @param shift The workshift to be removed
+     * @return true if the workshift was successfully removed, false otherwise
      */
     public boolean remove(Workshift shift) {
         boolean ret = this.items.remove(shift);
@@ -141,10 +154,11 @@ public class Workshifts {
 
 
     /**
-     * Creates default workshifts to a given date based on the day of the week
-     * @param givenDate date that the shifts are created
-     * @param directory location of directory
-     * @throws SailoException if file with default shifts is not found
+     * Creates default workshifts for the given date based on the day of the week.
+     * 
+     * @param givenDate The date for which the workshifts are created
+     * @param directory The location of the directory
+     * @throws SailoException if the file with default shifts is not found
      */
     public void createDefaultWorkshifts(LocalDate givenDate, String directory) throws SailoException {
         String weekDay = givenDate.getDayOfWeek().name();
@@ -177,6 +191,13 @@ public class Workshifts {
     }
     
     
+    /**
+     * Creates default workshifts for the given date based on the day of the week.
+     * 
+     * @param givenDate The date for which the workshifts are created
+     * @param directory The location of the directory
+     * @throws SailoException if the file with default shifts is not found
+     */
     private void createDefaultWorkshiftsFromFile(String path, LocalDate givenDate) throws SailoException {
         File ftied = new File(path);
         try (Scanner fi = new Scanner(new FileInputStream(ftied))) {
@@ -196,7 +217,9 @@ public class Workshifts {
 
     
     /**
-     * @return Arraylist of all those workshifts that doesn't yet have an agent assigned to them
+     * Finds and returns a list of vacant workshifts, i.e., workshifts without an assigned agent.
+     * 
+     * @return A list of vacant workshifts
      */
     public ArrayList<Workshift> findVacantWorkshifts(){
         ArrayList<Workshift> found = new ArrayList<Workshift>();
